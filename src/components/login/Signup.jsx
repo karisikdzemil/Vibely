@@ -3,6 +3,7 @@ export default function Signup({ type }) {
   return (
     <Form method="post" className="w-112 h-auto p-5 flex flex-col items-center">
       <h1 className="text-4xl text-[#f5f5f5] font-bold p-5">Sing Up</h1>
+      <input type="hidden" name="typeForm" value='signup' />
       <div className="w-full h-25 flex flex-col gap-2 justify-center pl-10">
         <label className="text-xl text-[#f5f5f5]" htmlFor="">
           Username
