@@ -33,7 +33,7 @@ export async function action ( { request } ) {
             if(user){
                 await setDoc(doc(db, "Users", user.uid), {
                     email: user.email,
-                    username: username
+                    username: username,
                 });
             }
             console.log('User registered successfully!!');
