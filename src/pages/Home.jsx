@@ -1,3 +1,4 @@
+import NewPost from "../components/home/NewPost";
 import Sidebar from "../components/home/sidebar";
 
 export default function Home() {
@@ -7,7 +8,9 @@ export default function Home() {
 
       <div className="w-[100%] min-h-[90vh] flex gap-5 pt-5">
            <Sidebar />
-        <div className="w-[60%] min-h-[90vh] bg-gray-900"></div>
+        <div className="w-[60%] min-h-[90vh] bg-gray-900 flex flex-col items-center p-5">
+            <NewPost />
+        </div>
         <div className="w-[20%] h-[90vh] bg-gray-900"></div>
       </div>
 
