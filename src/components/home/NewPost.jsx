@@ -61,38 +61,51 @@ export default function NewPost() {
   }
 
   return (
-    <div className="w-11/12 h-40 border-1 border-[#00bcd4] rounded-md p-5 flex flex-col justify-between">
-      <div className="w-full h-10 flex gap-2">
-        <p className="text-4xl text-white ">
-          <FontAwesomeIcon icon={faCircleUser} />
-        </p>
-        <input
-          ref={textRef}
-          className="w-4/5 h-10 text-xl text-gray-400 pl-3"
-          placeholder="What is on your mind Djemsy?"
-          type="text"
-        />
-      </div>
-      <div className="w-full h-10 flex gap-2 justify-between">
-        <p
-          onClick={chooseImageHandler}
-          className="text-white text-xl cursor-pointer"
-        >
-          <FontAwesomeIcon icon={faImage} /> Add Image
-        </p>
-        <input
-          onChange={fileChangeHandler}
-          ref={imageRef}
-          className="hidden"
-          type="file"
-        />
-        <button
-          onClick={createPostHandler}
-          className="text-black bg-[#00bcd4] w-20 h-10 text-xl rounded-md font-bold cursor-pointer"
-        >
-          Post
-        </button>
-      </div>
+    <div className="w-full max-w-2xl mx-auto bg-[#0f172a] border border-cyan-500 rounded-2xl p-6 shadow-xl hover:shadow-cyan-600/20 transition-all duration-300">
+    <div className="flex items-center gap-3 mb-4">
+      <FontAwesomeIcon icon={faCircleUser} className="text-5xl text-cyan-400" />
+      <input
+        ref={textRef}
+        type="text"
+        placeholder="What's on your mind, Djemsy?"
+        className="flex-1 bg-transparent border-b border-cyan-500 text-white text-lg px-2 py-1 focus:outline-none placeholder:text-gray-400"
+      />
     </div>
+  
+    {selectedImage && (
+      <div className="mb-4">
+        <img
+          src={URL.createObjectURL(selectedImage)}
+          alt="Selected"
+          className="w-full max-h-60 object-cover rounded-md border border-cyan-500"
+        />
+      </div>
+    )}
+  
+    <div className="flex justify-between items-center">
+      <button
+        onClick={chooseImageHandler}
+        className="text-cyan-400 hover:text-cyan-200 text-lg flex items-center gap-2 transition"
+      >
+        <FontAwesomeIcon icon={faImage} />
+        Add Image
+      </button>
+  
+      <input
+        onChange={fileChangeHandler}
+        ref={imageRef}
+        className="hidden"
+        type="file"
+      />
+  
+      <button
+        onClick={createPostHandler}
+        className="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-5 rounded-lg transition"
+      >
+        Post
+      </button>
+    </div>
+  </div>
+  
   );
 }
