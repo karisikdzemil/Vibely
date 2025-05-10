@@ -22,12 +22,10 @@ export default function Home() {
     fetchPosts();
   }, []);
   return (
-    <section className="w-[100%] min-h-[90vh] p-5 bg-[#121212]">
-      <div className="w-[100%] h-12 bg-gray-900"></div>
-
-      <div className="w-[100%] min-h-[90vh] flex gap-5 pt-5">
+    <section className="w-[100%] min-h-[90vh] bg-gray-900">
+      <div className="w-[100%] min-h-[90vh] flex gap-5 ">
            <Sidebar />
-           <div>
+        <div>
     </div>
         <div className="w-[60%] min-h-[90vh] bg-gray-900 flex flex-col items-center p-5">
             <NewPost />
@@ -37,7 +35,7 @@ export default function Home() {
                 ))}
             </ul>
         </div>
-        <div className="w-[20%] h-[90vh] bg-gray-900"></div>
+        <div className="w-[20%] h-[90vh] bg-gray-800"></div>
       </div>
 
     </section>

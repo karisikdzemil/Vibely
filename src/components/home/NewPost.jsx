@@ -61,7 +61,7 @@ export default function NewPost() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-[#0f172a] border border-cyan-500 rounded-2xl p-6 shadow-xl hover:shadow-cyan-600/20 transition-all duration-300">
+    <div className="w-11/12 bg-gray-800 border rounded-2xl p-6 shadow-xl hover:shadow-cyan-600/20 transition-all duration-300">
     <div className="flex items-center gap-3 mb-4">
       <FontAwesomeIcon icon={faCircleUser} className="text-5xl text-cyan-400" />
       <input
