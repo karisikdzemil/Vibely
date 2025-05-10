@@ -5,9 +5,16 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "fire
 import { auth, db } from "../components/firebase";
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 export default function Register () {
     const [typeOfRegistration, setTypeOfRegistration] = useState('signup');
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (user) {
+        return <Navigate to="/home" replace />;
+    }
 
     function registrationHandler () {
         setTypeOfRegistration(prevType => prevType === 'signup' ? 'login' : 'signup');
