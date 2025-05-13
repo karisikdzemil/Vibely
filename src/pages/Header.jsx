@@ -4,12 +4,10 @@ export default function Header () {
 
     return (
       <header className="w-full h-[10vh] px-8 bg-gray-800 shadow-lg border-b border-gray-700 sticky top-0 flex items-center justify-between z-50">
-      {/* Leva strana - Logo */}
       <h1 className="text-[#00bcd4] text-2xl font-bold tracking-wider">
         Vibely
       </h1>
     
-      {/* Sredina - Search bar */}
       <div className="w-1/3 relative">
         <input
           type="text"
@@ -22,7 +20,7 @@ export default function Header () {
         />
       </div>
     
-      {/* Desna strana - Ikonice */}
+
       <div className="flex items-center gap-6 text-white text-xl">
         <FontAwesomeIcon icon={faBell} className="cursor-pointer hover:text-[#00bcd4]" />
         <FontAwesomeIcon icon={faEnvelope} className="cursor-pointer hover:text-[#00bcd4]" />

@@ -25,7 +25,7 @@ export default function Post({ post }) {
         return "just now";
       }
   return (
-    <li className="w-11/12 h-140 bg-gray-800 px-5 py-2 rounded-md">
+    <li className="w-11/12 max-h-140 bg-gray-800 px-5 py-2 rounded-md">
       <div className="w-full flex gap-3 h-12 items-center m-2">
         <FontAwesomeIcon
           icon={faCircleUser}
@@ -34,9 +34,9 @@ export default function Post({ post }) {
         <h1 className="text-xl text-white font-bold">{post.username}</h1>
         <p className="text-gray-500">{timeAgo(post.time)}</p>
       </div>
-      <img className="w-12/12 h-2/3 object-cover" src={post.imageUrl} alt="" />
+      {post.imageUrl === '' ? '' : <img className="w-12/12 h-2/3 object-cover" src={post.imageUrl} alt="" />}
       <div className="w-full min-h-10 p-3 flex items-center gap-2 ">
-      <h1 className="text-xl text-white font-bold">{post.username}:</h1>
+      {/* <h1 className="text-xl text-white font-bold">{post.username}:</h1> */}
         <p className="text-gray-400">{post.postContent}</p>
       </div>
       <div className="w-full h-15 flex items-center gap-3">

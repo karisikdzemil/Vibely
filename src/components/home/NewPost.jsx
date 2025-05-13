@@ -5,17 +5,20 @@ import { useSelector } from "react-redux";
 import { addDoc, collection } from "firebase/firestore";
 import { db, storage } from "../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { addPost } from "../../store/posts-slice";
+import { useDispatch } from "react-redux";
 
 export default function NewPost() {
   const imageRef = useRef();
   const textRef = useRef();
   const user = useSelector((state) => state.user.user);
   const [selectedImage, setSelectedImage] = useState(null);
+  const dispatch = useDispatch();
 
   const fileChangeHandler = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setSelectedImage(file); // Sačuvamo sliku
+      setSelectedImage(file); 
       console.log("Izabrana slika:", file.name);
     }
   };
@@ -55,6 +58,8 @@ export default function NewPost() {
       ...postData,
     });
 
+    dispatch(addPost(postData))
+
     console.log("Post created with ID:", postRef.id);
     textRef.current.value = "";
     setSelectedImage(null);
@@ -67,7 +72,7 @@ export default function NewPost() {
       <input
         ref={textRef}
         type="text"
-        placeholder="What's on your mind, Djemsy?"
+        placeholder={`What's on your mind, ${user.username}?`}
         className="flex-1 bg-transparent border-b border-cyan-500 text-white text-lg px-2 py-1 focus:outline-none placeholder:text-gray-400"
       />
     </div>
