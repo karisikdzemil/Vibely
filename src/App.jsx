@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "./store/user-slice";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import Profile from "./pages/Profile";
 
 function App() {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ function App() {
         { index: true, element: <Register />, action: registerUserAction  },
         { path: '/register', element: <Register />, action: registerUserAction },
         { path: "/home", element: <ProtectedRoute><Home /></ProtectedRoute> },
+        { path: "/profile", element: <Profile /> },
       ],
     },
   ]);

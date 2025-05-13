@@ -26,7 +26,7 @@ export default function Header () {
         <FontAwesomeIcon icon={faEnvelope} className="cursor-pointer hover:text-[#00bcd4]" />
         <FontAwesomeIcon icon={faPlusSquare} className="cursor-pointer hover:text-[#00bcd4]" />
         <img
-          src="https://i.pravatar.cc/150?img=32" // možeš staviti sliku korisnika iz state-a
+          src="https://i.pravatar.cc/150?img=32" 
           alt="Profile"
           className="w-10 h-10 rounded-full object-cover cursor-pointer border-2 border-[#00bcd4]"
         />

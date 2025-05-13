@@ -25,7 +25,7 @@ export default function Post({ post }) {
         return "just now";
       }
   return (
-    <li className="w-11/12 max-h-140 bg-gray-800 px-5 py-2 rounded-md">
+    <li className="w-2/3 max-h-140 bg-gray-800 px-5 py-2 rounded-md">
       <div className="w-full flex gap-3 h-12 items-center m-2">
         <FontAwesomeIcon
           icon={faCircleUser}
