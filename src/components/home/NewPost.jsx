@@ -65,6 +65,10 @@ export default function NewPost() {
     setSelectedImage(null);
   }
 
+  if(!user || !user.username){
+    return <p>Ceka se</p>
+  }
+
   return (
     <div className="w-8/12 bg-gray-800 border rounded-2xl p-6 shadow-xl hover:shadow-cyan-600/20 transition-all duration-300">
     <div className="flex items-center gap-3 mb-4">

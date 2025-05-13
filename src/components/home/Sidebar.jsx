@@ -11,7 +11,7 @@ export default function Sidebar () {
         <div className="flex flex-col gap-4">
          <Link to='/profile'>
          <li className="text-2xl font-bold text-[#00bcd4] cursor-pointer mb-2">
-            <FontAwesomeIcon icon={faCircleUser} /> {user.username}
+            <FontAwesomeIcon icon={faCircleUser} /> {user && user.username}
           </li>
          </Link>
           <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
