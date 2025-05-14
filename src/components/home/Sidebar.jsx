@@ -5,11 +5,15 @@ import { Link } from "react-router-dom";
 
 export default function Sidebar () {
   const user = useSelector(state => state.user.user);
+
+      if(!user){
+        return;
+      }
     
     return(
         <ul className="w-[20%] h-[90vh] bg-gray-800 text-[#f5f5f5] flex flex-col justify-between p-5 pl-5 sticky top-20 rounded-r-3xl shadow-lg">
         <div className="flex flex-col gap-4">
-         <Link to='/profile'>
+         <Link to={`/user-profile/:${user.uid}`}>
          <li className="text-2xl font-bold text-[#00bcd4] cursor-pointer mb-2">
             <FontAwesomeIcon icon={faCircleUser} /> {user && user.username}
           </li>

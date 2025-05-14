@@ -5,27 +5,50 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import RenderPosts from "../components/post/RenderPosts";
+import { useParams } from "react-router-dom";
+import { collection, where, query, getDocs } from "firebase/firestore";
 
-export default function Profile() {
-  const currentUser = useSelector((state) => state.user.user);
+
+
+
+export default function Profile( ) {
+  // const currentUser = useSelector((state) => state.user.user);
   const [userData, setUserData] = useState(null);
+  const [posts, setPosts] = useState();
+  const [isCurrentUser, setIsCurrentUser] = useState(false);
   const allPosts = useSelector(state => state.posts);
-  console.log(allPosts)
+  const {userId} = useParams();
 
-  const posts = allPosts.filter(el => el.userId === currentUser.uid);
+  let currentUser = localStorage.getItem('user');
+  currentUser = JSON.parse(currentUser);
 
+  console.log(currentUser)
+  
   useEffect(() => {
     async function getUser() {
-      if (!currentUser || !currentUser.uid) return;
-      const userRef = doc(db, "Users", currentUser.uid);
-      console.log(currentUser.uid);
+      if (!userId) return;
+
+      const userRef = doc(db, "Users", userId.replace(':', ''));
+
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
         setUserData(userSnap.data());
       }
+     const cleanedUserId = userId.replace(/^:/, ""); 
+      console.log("Tražim postove za userId:", cleanedUserId);
+
+      const postsRef = collection(db, "PostsMeta");
+      const q = query(postsRef, where("userId", "==", cleanedUserId));
+      const snapshot = await getDocs(q);
+
+      console.log("Broj postova:", snapshot.size);
+
+      const postsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setPosts(postsData);
+      console.log(postsData)
     }
     getUser();
-  }, [currentUser]);
+  }, [userId]);
 
   if (!userData) {
     return (
@@ -33,6 +56,12 @@ export default function Profile() {
         <p>Loading profile...</p>
       </div>
     );
+  }
+
+  if(userId.replace(/^:/, "") === currentUser.uid){
+    console.log('isti su')
+  }else{
+    console.log('razliciti')
   }
 
   const profilePicture =
@@ -50,7 +79,7 @@ export default function Profile() {
     console.log(allPosts)
   return (
     <div className="w-6/10 min-h-screen p-8 text-white">
-      <div className="bg-gray-800 rounded-2xl p-6 flex flex-col items-center shadow-lg">
+      <div className="w-4/5 min-h-80 m-auto bg-gray-800 rounded-2xl p-6 flex flex-col items-center shadow-lg">
         {profilePicture}
         <h2 className="text-2xl font-semibold mt-4">{userData.username}</h2>
         <p className="text-gray-400">{userData.email}</p>

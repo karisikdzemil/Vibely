@@ -1,4 +1,4 @@
-import NewPost from "../components/home/NewPost";
+import NewPost from "../components/post/NewPost";
 import { useSelector } from "react-redux";
 import RenderPosts from "../components/post/RenderPosts";
 

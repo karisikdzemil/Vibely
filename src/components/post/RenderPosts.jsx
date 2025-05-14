@@ -1,4 +1,4 @@
-import Post from "../home/Post"
+import Post from "./Post"
 
 export default function RenderPosts ( {posts} ) {
     return(
