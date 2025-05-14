@@ -14,9 +14,11 @@ export default function Sidebar () {
             <FontAwesomeIcon icon={faCircleUser} /> {user && user.username}
           </li>
          </Link>
-          <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
+        <Link to='/home'>
+        <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
             <FontAwesomeIcon icon={faHouse} /> Home
           </li>
+        </Link>
           <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
             <FontAwesomeIcon icon={faImage} /> New Post
           </li>

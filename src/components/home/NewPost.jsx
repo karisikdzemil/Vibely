@@ -66,7 +66,7 @@ export default function NewPost() {
   }
 
   if(!user || !user.username){
-    return <p>Ceka se</p>
+    return <p></p>
   }
 
   return (
