@@ -1,13 +1,73 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComment, faHeart } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { faComment, faHeart, faCircleUser } from "@fortawesome/free-solid-svg-icons";
+import { useState, useRef } from "react";
+import { db } from "../firebase";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { useSelector } from "react-redux";
 
 
 export default function Comment( {post} ) {
     const [isVisible, setIsVisible] = useState(false);
-    function commentPostHandler () {
-        setIsVisible(prevState => !prevState)
-    }
+    const [allComments, setAllComments] = useState([]);
+    const commentRef = useRef()
+    const currentUser = useSelector(state => state.user.user);
+
+    async function commentPostHandler() {
+        setIsVisible((prevState) => !prevState);
+      
+        try {
+          const commentsQuery = query(
+            collection(db, "comments"),
+            where("postId", "==", post.id)
+          );
+      
+          const snapshot = await getDocs(commentsQuery);
+      
+          const comments = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+      
+          setAllComments(comments);
+        } catch (error) {
+          console.error("Greška prilikom dohvatanja komentara:", error);
+        }
+      }
+
+      async function setCommentHandler() {
+        const commentText = commentRef.current.value.trim();
+        if (!commentText) return;
+      
+        try {
+          const docRef = await addDoc(collection(db, "comments"), {
+            comment: commentText,
+            postId: post.id,
+            userId: currentUser.uid,
+            username: currentUser.username,
+            userImage: currentUser.image,
+            createdAt: new Date().toISOString(),
+          });
+      
+          const newComment = {
+            id: docRef.id, // ručno dodaješ ID koji ti je Firestore vratio
+            comment: commentText,
+            postId: post.id,
+            userId: currentUser.uid,
+            username: currentUser.username,
+            userImage: currentUser.image,
+            createdAt: new Date().toISOString(),
+          };
+      
+          setAllComments(prevComments => [newComment, ...prevComments]);
+          commentRef.current.value = "";
+        } catch (error) {
+          console.error("Greška prilikom dodavanja komentara:", error);
+        }
+      }
+
+      console.log(allComments)
+      console.log(currentUser)
+
   return (
     <div className="w-[100%] min-h-[5vh]">
     <div className="w-[100%] h-10 flex items-center gap-5">
@@ -21,9 +81,29 @@ export default function Comment( {post} ) {
     </button>
     </div>
     
-   {isVisible && <div className="w-[100%] min-h-[10vh] pt-5 bg-red-400">
-        <input className="w-9/12 h-10 pl-3 rounded-md bg-gray-500 text-white" type="text" placeholder="Enter something..." />
-        <button className="w-25 h-10 rounded-md hover:bg-[#31a1b0] cursor-pointer bg-[#00bcd4]">Post</button>
+   {isVisible && <div className="w-[100%] min-h-[10vh] pt-5">
+        <input ref={commentRef} className="w-8/12 h-10 pl-3 rounded-md bg-gray-600 mr-3 text-white" type="text" placeholder="Enter something..." />
+        <button onClick={setCommentHandler} className="w-25 h-10 rounded-md hover:bg-[#31a1b0] cursor-pointer bg-[#00bcd4]">Post</button>
+        <ul className="w-[100%] min-h-10 py-5">
+            {allComments.map(el => (
+
+                <li className="w-full bg-gray-700 rounded-lg shadow-md p-4 mb-3">
+                <div className="flex items-center mb-2">
+                  <img
+                    src={el.userImage || <FontAwesomeIcon icon={faCircleUser} className="text-4xl"/>}
+                    alt="User"
+                    className="w-10 h-10 rounded-full object-cover mr-3"
+                  />
+                  <div>
+                    <h3 className="text-white font-semibold">{el.username || "Anonimni korisnik"}</h3>
+                    <p className="text-sm text-gray-400">{new Date(el.createdAt).toLocaleString()}</p>
+                  </div>
+                </div>
+                <p className="text-gray-300 text-base leading-relaxed break-words">{el.comment}</p>
+              </li>
+              
+            ))}
+        </ul>
     </div>}
     </div>
   );
