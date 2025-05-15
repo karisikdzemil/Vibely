@@ -1,17 +1,24 @@
 import { getDoc, doc } from "firebase/firestore";
 // import { useSelector } from "react-redux";
 import { db } from "../components/firebase";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import RenderPosts from "../components/post/RenderPosts";
 import { useParams } from "react-router-dom";
 import { collection, where, query, getDocs } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { updateDoc } from "firebase/firestore";
+import { storage } from "../components/firebase";
 
 export default function Profile() {
   // const currentUser = useSelector((state) => state.user.user);
   const [userData, setUserData] = useState(null);
   const [posts, setPosts] = useState();
+  const [selectedImage, setSelectedImage] = useState();
+  const inputImageRef = useRef();
+  const userRef = useRef();
+  const aboutRef = useRef();
   const [isEditing, setIsEditing] = useState(false);
   // const allPosts = useSelector(state => state.posts);
   const { userId } = useParams();
@@ -74,8 +81,83 @@ export default function Profile() {
       />
     );
 
-  function editUserHandler() {
-    setIsEditing(true);
+  async function editUserHandler() {
+    if (!isEditing) {
+      setIsEditing(true);
+      return;
+    }
+
+    try {
+      let imageUrl = userData.profilePicture;
+
+      if (selectedImage && selectedImage instanceof File) {
+        const imageRef = ref(
+          storage,
+          `userImages/${currentUser.uid}_${Date.now()}`
+        );
+        await uploadBytes(imageRef, selectedImage);
+        imageUrl = await getDownloadURL(imageRef);
+      }
+
+      const changedUser = {
+        about: aboutRef.current.value,
+        username: userRef.current.value,
+        email: currentUser.email,
+        profilePicture: imageUrl,
+      };
+
+      const userDocRef = doc(db, "Users", currentUser.uid);
+      await updateDoc(userDocRef, changedUser);
+
+      // Ažuriraj sve postove koje je korisnik kreirao
+      const postsQuery = query(
+        collection(db, "PostsMeta"),
+        where("userId", "==", currentUser.uid)
+      );
+
+      const snapshot = await getDocs(postsQuery);
+
+      const updatePostPromises = snapshot.docs.map((docSnap) => {
+        const postRef = doc(db, "PostsMeta", docSnap.id);
+        return updateDoc(postRef, {
+          username: changedUser.username,
+          profilePicture: changedUser.profilePicture,
+        });
+      });
+
+      await Promise.all(updatePostPromises);
+
+      const updatedSnapshot = await getDocs(postsQuery);
+
+      // Kreiraj niz sa osveženim postovima
+      const updatedPosts = updatedSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      // Ažuriraj posts state
+      setPosts(updatedPosts);
+
+      // Osveži localStorage i prikaz
+      const updatedUser = { ...currentUser, ...changedUser };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      setUserData(updatedUser);
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Greška prilikom ažuriranja korisnika i postova:", error);
+    }
+  }
+
+  function chooseImageHandler() {
+    inputImageRef.current.click();
+  }
+  function imageInputHandler(event) {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+      console.log("Izabrana slika:", file.name);
+    }
   }
 
   return (
@@ -89,19 +171,42 @@ export default function Profile() {
             Edit
           </button>
         )}
-        {!isEditing ? profilePicture : <div className="w-30 h-30 bg-gray-600 flex flex-col items-center justify-center gap-3"><h1 className="text-4xl text-white">+</h1> <p>Add Image</p></div>}
+        {!isEditing ? (
+          profilePicture
+        ) : (
+          <div
+            onClick={chooseImageHandler}
+            className="cursor-pointer w-30 h-30 bg-gray-600 flex flex-col items-center justify-center gap-3"
+          >
+            <h1 className="text-4xl text-white">+</h1> <p>Add Image</p>
+            <input
+              onChange={imageInputHandler}
+              ref={inputImageRef}
+              type="file"
+              className="hidden"
+            />
+          </div>
+        )}
         {!isEditing ? (
           <h2 className="text-2xl font-semibold mt-4">{userData.username}</h2>
         ) : (
-          <input className="w-3/5 h-7 bg-gray-600 pl-5 my-5" placeholder={userData.username} />
+          <input
+            ref={userRef}
+            className="w-3/5 h-7 bg-gray-600 pl-5 my-5"
+            placeholder={userData.username}
+          />
         )}
-       {!isEditing ? <p className="text-gray-400">{userData.email}</p> : ''}
+        {!isEditing ? <p className="text-gray-400">{userData.email}</p> : ""}
         <div className="mt-6 text-center w-full">
           <h3 className="text-xl font-medium text-[#00bcd4] mb-2">About</h3>
           {!isEditing ? (
             <p className="text-gray-300">{userData.about}</p>
           ) : (
-            <textarea className="w-3/5 h-20 bg-gray-600 p-2 " placeholder={userData.about} />
+            <textarea
+              ref={aboutRef}
+              className="w-3/5 h-20 bg-gray-600 p-2 "
+              placeholder={userData.about}
+            />
           )}
         </div>
       </div>

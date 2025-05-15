@@ -8,14 +8,26 @@ export default function Post({ post }) {
       function showUserPostsHandler () {
         navigate(`/user-profile/:${post.userId}`)
       }
+      const profilePicture =
+    post.profilePicture === undefined ? (
+      <FontAwesomeIcon icon={faCircleUser} className="text-4xl text-gray-500" />
+    ) : (
+      <img
+        src={post.profilePicture}
+        alt="Profile picture"
+        className="w-12 h-12 rounded-full object-cover shadow-md"
+      />
+    );
+    console.log(post.profilePicture)
 
   return (
     <li className="w-4/5 max-h-140 bg-gray-800 px-5 py-2 rounded-md">
       <div className="w-full flex gap-3 h-12 items-center m-2">
-        <FontAwesomeIcon
+        {/* <FontAwesomeIcon
           icon={faCircleUser}
           className="text-4xl text-gray-500"
-        />
+        /> */}
+        {profilePicture}
         <h1 onClick={showUserPostsHandler} className="text-xl text-white font-bold cursor-pointer">{post.username}</h1>
         <p className="text-gray-500">{timeAgo(post.time)}</p>
       </div>
