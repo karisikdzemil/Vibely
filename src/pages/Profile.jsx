@@ -10,6 +10,7 @@ import { collection, where, query, getDocs } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { updateDoc } from "firebase/firestore";
 import { storage } from "../components/firebase";
+import { useDispatch } from "react-redux";
 
 export default function Profile() {
   // const currentUser = useSelector((state) => state.user.user);
@@ -22,6 +23,7 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   // const allPosts = useSelector(state => state.posts);
   const { userId } = useParams();
+  const dispatch = useDispatch();
 
   let currentUser = localStorage.getItem("user");
   currentUser = JSON.parse(currentUser);
@@ -81,73 +83,70 @@ export default function Profile() {
       />
     );
 
-  async function editUserHandler() {
-    if (!isEditing) {
-      setIsEditing(true);
-      return;
-    }
-
-    try {
-      let imageUrl = userData.profilePicture;
-
-      if (selectedImage && selectedImage instanceof File) {
-        const imageRef = ref(
-          storage,
-          `userImages/${currentUser.uid}_${Date.now()}`
-        );
-        await uploadBytes(imageRef, selectedImage);
-        imageUrl = await getDownloadURL(imageRef);
+    async function editUserHandler() {
+      if (!isEditing) {
+        setIsEditing(true);
+        return;
       }
-
-      const changedUser = {
-        about: aboutRef.current.value,
-        username: userRef.current.value,
-        email: currentUser.email,
-        profilePicture: imageUrl,
-      };
-
-      const userDocRef = doc(db, "Users", currentUser.uid);
-      await updateDoc(userDocRef, changedUser);
-
-      // Ažuriraj sve postove koje je korisnik kreirao
-      const postsQuery = query(
-        collection(db, "PostsMeta"),
-        where("userId", "==", currentUser.uid)
-      );
-
-      const snapshot = await getDocs(postsQuery);
-
-      const updatePostPromises = snapshot.docs.map((docSnap) => {
-        const postRef = doc(db, "PostsMeta", docSnap.id);
-        return updateDoc(postRef, {
+    
+      try {
+        let imageUrl = userData.profilePicture;
+    
+        if (selectedImage && selectedImage instanceof File) {
+          const imageRef = ref(
+            storage,
+            `userImages/${currentUser.uid}_${Date.now()}`
+          );
+          await uploadBytes(imageRef, selectedImage);
+          imageUrl = await getDownloadURL(imageRef);
+        }
+    
+        const changedUser = {
+          about: aboutRef.current.value,
+          username: userRef.current.value,
+          email: currentUser.email,
+          profilePicture: imageUrl,
+        };
+    
+        const userDocRef = doc(db, "Users", currentUser.uid);
+        await updateDoc(userDocRef, changedUser);
+    
+        const postsQuery = query(
+          collection(db, "PostsMeta"),
+          where("userId", "==", currentUser.uid)
+        );
+    
+        const snapshot = await getDocs(postsQuery);
+    
+        const updatePostPromises = snapshot.docs.map((docSnap) => {
+          const postRef = doc(db, "PostsMeta", docSnap.id);
+          return updateDoc(postRef, {
+            username: changedUser.username,
+            profilePicture: changedUser.profilePicture,
+          });
+        });
+    
+        await Promise.all(updatePostPromises);
+    
+        const updatedPosts = snapshot.docs.map((docSnap) => ({
+          id: docSnap.id,
+          ...docSnap.data(),
           username: changedUser.username,
           profilePicture: changedUser.profilePicture,
-        });
-      });
-
-      await Promise.all(updatePostPromises);
-
-      const updatedSnapshot = await getDocs(postsQuery);
-
-      // Kreiraj niz sa osveženim postovima
-      const updatedPosts = updatedSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      // Ažuriraj posts state
-      setPosts(updatedPosts);
-
-      // Osveži localStorage i prikaz
-      const updatedUser = { ...currentUser, ...changedUser };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-
-      setUserData(updatedUser);
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Greška prilikom ažuriranja korisnika i postova:", error);
+        }));
+    
+        dispatch(setPosts(updatedPosts)); // redux update
+    
+        const updatedUser = { ...currentUser, ...changedUser };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+    
+        setUserData(updatedUser);
+        setIsEditing(false);
+      } catch (error) {
+        console.error("Greška prilikom ažuriranja korisnika i postova:", error);
+      }
     }
-  }
+    
 
   function chooseImageHandler() {
     inputImageRef.current.click();

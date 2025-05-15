@@ -13,7 +13,7 @@ export default function Layout () {
     return (
         <div>
             {!shouldHideLayout && <Header />}
-            <main className="w-[100%] flex justify-between bg-gray-900">
+            <main className="w-[100%] min-h-[90vh] flex justify-between bg-gray-900">
              {!shouldHideLayout && <Sidebar />}
               <Outlet />
              {!shouldHideLayout && <MoreInformation />}
