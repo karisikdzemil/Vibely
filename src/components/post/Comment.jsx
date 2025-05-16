@@ -2,15 +2,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faHeart, faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { useState, useRef } from "react";
 import { db } from "../firebase";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
-import { useSelector } from "react-redux";
-
+import { collection, addDoc, getDocs, query, where, deleteDoc, doc, updateDoc, increment } from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPosts } from "../../store/posts-slice";
 
 export default function Comment( {post} ) {
     const [isVisible, setIsVisible] = useState(false);
     const [allComments, setAllComments] = useState([]);
+    const [isLiked, setIsLiked] = useState(false);
     const commentRef = useRef()
     const currentUser = useSelector(state => state.user.user);
+    const dispatch = useDispatch();
+
+
+
 
     async function commentPostHandler() {
         setIsVisible((prevState) => !prevState);
@@ -65,16 +70,60 @@ export default function Comment( {post} ) {
         }
       }
 
-      console.log(allComments)
-      console.log(currentUser)
+      
+      async function likePostHandler() {
+        if (!currentUser) return alert("Morate biti ulogovani da biste lajkovali post!");
+      
+        try {
+            setIsLiked(prevState => !prevState);
+          const likesRef = collection(db, "likes");
+      
+          // Proveri da li korisnik već lajkovao post
+          const likeQuery = query(
+            likesRef,
+            where("postId", "==", post.id),
+            where("userId", "==", currentUser.uid)
+          );
+          const snapshot = await getDocs(likeQuery);
+      
+          const postRef = doc(db, "PostsMeta", post.id); // referenca na post
+      
+          if (!snapshot.empty) {
+            // Već lajkovao – ukloni lajk i smanji counter
+            await Promise.all(snapshot.docs.map(docSnap =>
+              deleteDoc(doc(db, "likes", docSnap.id))
+            ));
+      
+            await updateDoc(postRef, {
+              likesCount: increment(-1),
+            });
+          } else {
+            // Nije lajkovao – dodaj lajk i povećaj counter
+            await addDoc(likesRef, {
+              postId: post.id,
+              userId: currentUser.uid,
+              createdAt: new Date().toISOString(),
+            });
+      
+            await updateDoc(postRef, {
+              likesCount: increment(1),
+            });
+          }
+        dispatch(fetchPosts())
+      
+        } catch (error) {
+          console.error("Greška pri lajkovanju posta:", error);
+        }
+      }
+      
 
   return (
     <div className="w-[100%] min-h-[5vh]">
     <div className="w-[100%] h-10 flex items-center gap-5">
-    <p className="text-white text-center">
-      <FontAwesomeIcon className="text-xl cursor-pointer" icon={faHeart} />{" "}
+    <button onClick={likePostHandler} className="text-white text-center">
+      <FontAwesomeIcon className={`text-xl cursor-pointer ${isLiked ? 'text-red-600' : ''}`} icon={faHeart} />{" "}
       <span className="mx-1">{post.likesCount}</span>{" "}
-    </p>
+    </button>
     <button onClick={commentPostHandler} className="text-white">
       {/* <span className="mx-1"></span> */}
       <FontAwesomeIcon className="text-xl cursor-pointer" icon={faComment} />{" "}
