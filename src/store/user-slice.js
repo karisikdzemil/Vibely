@@ -11,7 +11,7 @@ const userSlice = createSlice({
                 uid: action.payload.uid,
                 username: action.payload.username,
                 email: action.payload.email,
-                image:action.payload.profilePicture
+                image:action.payload.imageUrl
             };
         },
         clearUser(state) {

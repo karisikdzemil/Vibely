@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser, faImage } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { addDoc, collection } from "firebase/firestore";
-import { db, storage } from "../firebase";
+import { db, storage } from "../components/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { addPost } from "../../store/posts-slice";
+import { addPost } from "../store/posts-slice";
 import { useDispatch } from "react-redux";
 
 export default function NewPost() {
@@ -70,51 +70,58 @@ export default function NewPost() {
   }
 
   return (
-    <div className="w-4/5 bg-gray-800 border rounded-2xl p-6 shadow-xl hover:shadow-cyan-600/20 transition-all duration-300">
-    <div className="flex items-center gap-3 mb-4">
-      <FontAwesomeIcon icon={faCircleUser} className="text-5xl text-cyan-400" />
+    <div className="min-h-screen w-[60%] bg-gray-900 text-white flex items-start justify-center pt-20 px-4">
+  <div className="w-full max-w-2xl bg-gray-800 rounded-3xl shadow-2xl border border-cyan-600 p-8">
+    
+    <h2 className="text-3xl font-semibold text-cyan-400 mb-6 text-center">
+      Create a New Post
+    </h2>
+
+    <div className="flex items-center gap-4 mb-6">
+      <FontAwesomeIcon icon={faCircleUser} className="text-6xl text-cyan-400" />
       <input
         ref={textRef}
         type="text"
         placeholder={`What's on your mind, ${user.username}?`}
-        className="flex-1 bg-transparent border-b border-cyan-500 text-white text-lg px-2 py-1 focus:outline-none placeholder:text-gray-400"
+        className="flex-1 bg-transparent border-b-2 border-cyan-500 text-white text-xl px-2 py-2 focus:outline-none placeholder:text-gray-400"
       />
     </div>
-  
+
     {selectedImage && (
-      <div className="mb-4">
+      <div className="mb-6">
         <img
           src={URL.createObjectURL(selectedImage)}
           alt="Selected"
-          className="w-full max-h-60 object-cover rounded-md border border-cyan-500"
+          className="w-full max-h-[500px] object-cover rounded-xl border border-cyan-500"
         />
       </div>
     )}
-  
-    <div className="flex justify-between items-center">
+
+    <div className="flex justify-between items-center mt-4">
       <button
         onClick={chooseImageHandler}
-        className="text-cyan-400 hover:text-cyan-200 text-lg flex items-center gap-2 transition"
+        className="text-cyan-400 hover:text-cyan-300 text-lg flex items-center gap-2 transition"
       >
         <FontAwesomeIcon icon={faImage} />
-        Add Image
+        Add Photo
       </button>
-  
+
       <input
         onChange={fileChangeHandler}
         ref={imageRef}
-        className="hidden"
         type="file"
+        className="hidden"
       />
-  
+
       <button
         onClick={createPostHandler}
-        className="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-5 rounded-lg transition"
+        className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold text-lg py-2 px-6 rounded-xl transition shadow-md hover:shadow-cyan-700/30"
       >
         Post
       </button>
     </div>
   </div>
+</div>
   
   );
 }

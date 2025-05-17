@@ -6,11 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import RenderPosts from "../components/post/RenderPosts";
 import { useParams } from "react-router-dom";
-import { collection, where, query, getDocs } from "firebase/firestore";
+import { collection, where, query, getDocs, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { updateDoc } from "firebase/firestore";
 import { storage } from "../components/firebase";
 import { useDispatch } from "react-redux";
+import { userActions } from "../store/user-slice"; 
 
 export default function Profile() {
   // const currentUser = useSelector((state) => state.user.user);
@@ -61,7 +61,7 @@ export default function Profile() {
 
   if (!userData) {
     return (
-      <div className="w-full min-h-screen flex justify-center items-center text-white">
+      <div className="w-[60%] min-h-screen flex justify-center items-center text-white">
         <p>Loading profile...</p>
       </div>
     );
@@ -136,6 +136,7 @@ export default function Profile() {
         }));
     
         dispatch(setPosts(updatedPosts)); // redux update
+        dispatch(userActions.setUser(updatedUser));
     
         const updatedUser = { ...currentUser, ...changedUser };
         localStorage.setItem("user", JSON.stringify(updatedUser));
@@ -146,6 +147,7 @@ export default function Profile() {
         console.error("Greška prilikom ažuriranja korisnika i postova:", error);
       }
     }
+    console.log(userData)
     
 
   function chooseImageHandler() {

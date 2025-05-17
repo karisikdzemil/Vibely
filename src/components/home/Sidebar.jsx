@@ -23,9 +23,12 @@ export default function Sidebar () {
             <FontAwesomeIcon icon={faHouse} /> Home
           </li>
         </Link>
-          <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
+        <Link to='/new-post'>
+         <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
             <FontAwesomeIcon icon={faImage} /> New Post
           </li>
+        </Link>
+         
           <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
             <FontAwesomeIcon icon={faMagnifyingGlass} /> Explore
           </li>

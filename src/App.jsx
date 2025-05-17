@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import { db } from "./components/firebase";
 import { getDocs, collection } from "firebase/firestore";
 import { setPosts } from "./store/posts-slice";
+import NewPost from "./pages/NewPost";
 
 function App() {
   const dispatch = useDispatch();
@@ -56,6 +57,7 @@ function App() {
           ),
         },
         { path: "/user-profile/:userId", element: <Profile /> },
+        { path: "/new-post", element: <NewPost /> },
       ],
     },
   ]);

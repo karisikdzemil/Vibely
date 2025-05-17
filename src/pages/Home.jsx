@@ -1,4 +1,4 @@
-import NewPost from "../components/post/NewPost";
+import NewPost from "./NewPost";
 import { useSelector } from "react-redux";
 import RenderPosts from "../components/post/RenderPosts";
 
@@ -12,7 +12,6 @@ export default function Home() {
     <section className="w-[60%] min-h-[90vh] bg-gray-900">
       {/* <div className="w-[100%] min-h-[90vh] flex gap-5"> */}
         <div className="w-[100%] min-h-[90vh] bg-gray-900 flex flex-col items-center p-5">
-          <NewPost />
           <RenderPosts posts={posts}/>
         </div>
       {/* </div> */}
