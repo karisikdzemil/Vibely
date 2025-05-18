@@ -36,6 +36,7 @@ export default function Profile() {
 
       const userRef = doc(db, "Users", userId.replace(":", ""));
 
+      console.log(userRef)
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
         setUserData(userSnap.data());
