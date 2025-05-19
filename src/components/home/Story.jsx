@@ -12,7 +12,7 @@ export default function Story () {
       }
 
     return(
-        <ul className="w-full h-[35vh] bg-gray-800 flex items-center p-5 gap-2 rounded-md overflow-x-auto flex-nowrap">
+        <ul className="w-full h-[35vh] bg-gray-800 flex items-center p-5 gap-5 rounded-md overflow-x-auto flex-nowrap">
         {showPostArray.map(el => (
           <li key={el.id} className="min-w-40 h-[30vh] relative rounded-md">
             <img className="w-full h-full object-cover rounded-md" src={el.imageUrl} alt="" />
