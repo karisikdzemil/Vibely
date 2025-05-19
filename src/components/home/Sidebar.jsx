@@ -48,9 +48,12 @@ export default function Sidebar () {
           <li className="cursor-pointer hover:text-[#00bcd4]">
             <FontAwesomeIcon icon={faGear} /> Settings
           </li>
-          <li className="cursor-pointer hover:text-[#00bcd4]">
+          <Link to='/help'>
+            <li className="cursor-pointer hover:text-[#00bcd4]">
             <FontAwesomeIcon icon={faCircleQuestion} /> Help
           </li>
+          </Link>
+        
           <li className="cursor-pointer hover:text-red-400">
             <FontAwesomeIcon icon={faRightFromBracket} /> Logout
           </li>

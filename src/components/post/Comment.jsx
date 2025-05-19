@@ -47,7 +47,7 @@ currentUser = JSON.parse(currentUser);
         postId: post.id,
         userId: currentUser.uid,
         username: currentUser.username,
-        userImage: currentUser.image,
+        userImage: currentUser.profilePicture,
         createdAt: new Date().toISOString(),
       });
 
@@ -77,16 +77,18 @@ currentUser = JSON.parse(currentUser);
     }
     console.log(id)
   } 
+  
 
   return (
     <div className="w-[100%] min-h-[5vh]">
       <div className="w-[100%] h-10 flex items-center gap-5">
         <Like post={post} />
-        <button onClick={commentPostHandler} className="text-white">
+        <button onClick={commentPostHandler} className="text-white cursor-pointer">
           <FontAwesomeIcon
             className="text-xl cursor-pointer"
             icon={faComment}
           />{" "}
+        <span className="mx-1">{post.commentsCount}</span>
         </button>
       </div>
 
