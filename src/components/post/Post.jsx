@@ -14,6 +14,7 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import SavePost from "./SavePost";
 
 export default function Post({ post }) {
   const [isDeliting, setIsDeliting] = useState(false);
@@ -22,6 +23,10 @@ export default function Post({ post }) {
   const currentUser = useSelector((state) => state.user.user);
 
   const edit = currentUser.uid === post.userId;
+
+  if(!post || !post.id ){
+    return;
+  }
 
   function showUserPostsHandler() {
     navigate(`/user-profile/:${post.userId}`);
@@ -106,6 +111,7 @@ export default function Post({ post }) {
       </div>
       <div className="w-full min-h-15 p-5 flex items-center gap-3">
         <Comment post={post} />
+        <SavePost post={post}/>
       </div>
     </li>
   );

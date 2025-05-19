@@ -42,7 +42,8 @@ export async function action ( { request } ) {
                     email: user.email,
                     username: username,
                     about: '',
-                    profilePicture: ''
+                    profilePicture: '',
+                    savedPosts: []
                 });
             }
 

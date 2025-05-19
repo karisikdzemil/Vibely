@@ -13,6 +13,7 @@ import { getDocs, collection } from "firebase/firestore";
 import { setPosts } from "./store/posts-slice";
 import NewPost from "./pages/NewPost";
 import Help from "./pages/Help";
+import SavedPosts from "./pages/SavedPosts";
 
 function App() {
   const dispatch = useDispatch();
@@ -60,6 +61,7 @@ function App() {
         { path: "/user-profile/:userId", element: <Profile /> },
         { path: "/new-post", element: <NewPost /> },
         { path: "/help", element: <Help /> },
+        { path: "/saved-posts", element: <SavedPosts /> },
       ],
     },
   ]);

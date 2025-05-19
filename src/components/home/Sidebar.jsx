@@ -32,9 +32,12 @@ export default function Sidebar () {
           <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
             <FontAwesomeIcon icon={faMagnifyingGlass} /> Explore
           </li>
-          <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
+          <Link to='saved-posts'>
+           <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
             <FontAwesomeIcon icon={faBookmark} /> Saved
           </li>
+          </Link>
+         
         </div>
       
         <div className="flex flex-col gap-3 text-sm">
