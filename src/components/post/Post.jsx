@@ -15,24 +15,26 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import SavePost from "./SavePost";
+import Follow from "./Follow";
 
 export default function Post({ post }) {
   const [isDeliting, setIsDeliting] = useState(false);
   const postRef = useRef();
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.user.user);
-
-  const edit = currentUser.uid === post.userId;
-
+  
   if(!post || !post.id ){
     return;
   }
+
+  const edit = currentUser.uid === post.userId;
+
 
   function showUserPostsHandler() {
     navigate(`/user-profile/:${post.userId}`);
   }
   const profilePicture =
-    post.profilePicture === undefined ? (
+    post.profilePicture === "" ? (
       <FontAwesomeIcon icon={faCircleUser} className="text-4xl text-gray-500" />
     ) : (
       <img
@@ -61,13 +63,12 @@ export default function Post({ post }) {
 
       postRef.current.remove();
       setIsDeliting(false);
-      console.log("Post i komentari uspešno obrisani:", id);
     } catch (error) {
       console.error("Greška prilikom brisanja posta i komentara:", error);
     }
   }
 
-  
+
 
   return (
     <li
@@ -85,6 +86,7 @@ export default function Post({ post }) {
           </h1>
           <p className="text-gray-500">{timeAgo(post.time)}</p>
         </div>
+        {!edit && <Follow post={post}/>}
         {edit && (
           <button
             onClick={() => deletePostHandler(post.id)}

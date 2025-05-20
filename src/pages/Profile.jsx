@@ -1,5 +1,4 @@
 import { getDoc, doc } from "firebase/firestore";
-// import { useSelector } from "react-redux";
 import { db } from "../components/firebase";
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -28,34 +27,27 @@ export default function Profile() {
   let currentUser = localStorage.getItem("user");
   currentUser = JSON.parse(currentUser);
 
-  console.log(currentUser);
-
   useEffect(() => {
     async function getUser() {
       if (!userId) return;
 
       const userRef = doc(db, "Users", userId.replace(":", ""));
 
-      console.log(userRef)
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
         setUserData(userSnap.data());
       }
       const cleanedUserId = userId.replace(/^:/, "");
-      console.log("Tražim postove za userId:", cleanedUserId);
 
       const postsRef = collection(db, "PostsMeta");
       const q = query(postsRef, where("userId", "==", cleanedUserId));
       const snapshot = await getDocs(q);
-
-      console.log("Broj postova:", snapshot.size);
 
       const postsData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setPosts(postsData);
-      console.log(postsData);
     }
     getUser();
   }, [userId]);
@@ -112,6 +104,7 @@ export default function Profile() {
         const userDocRef = doc(db, "Users", currentUser.uid);
         await updateDoc(userDocRef, changedUser);
     
+        // Update posts with new username/profilePicture
         const postsQuery = query(
           collection(db, "PostsMeta"),
           where("userId", "==", currentUser.uid)
@@ -136,10 +129,12 @@ export default function Profile() {
           profilePicture: changedUser.profilePicture,
         }));
     
-        dispatch(setPosts(updatedPosts)); // redux update
-        dispatch(userActions.setUser(updatedUser));
-    
         const updatedUser = { ...currentUser, ...changedUser };
+        console.log(updatedUser);
+        console.log(updatedPosts)
+        dispatch(userActions.setUser(updatedUser));
+        // dispatch(setPosts(updatedPosts));
+
         localStorage.setItem("user", JSON.stringify(updatedUser));
     
         setUserData(updatedUser);
@@ -148,7 +143,6 @@ export default function Profile() {
         console.error("Greška prilikom ažuriranja korisnika i postova:", error);
       }
     }
-    console.log(userData)
     
 
   function chooseImageHandler() {

@@ -19,7 +19,6 @@ export default function SavePost( {post} ) {
     
             if (userSnap.exists()) {
               const data = userSnap.data();
-              console.log(data)
               const isInSaved = data.savedPosts?.includes(post.id.replace(':', ''));
               setIsSaved(isInSaved);
                 
@@ -34,7 +33,7 @@ export default function SavePost( {post} ) {
         if (user?.uid) {
           fetchUser(user.uid);
         }
-      }, [user.uid]);
+      }, [user.uid, post.id]);
 
     async function toggleSavePost(postId, userId) {
       try {

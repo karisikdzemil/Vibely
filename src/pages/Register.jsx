@@ -43,7 +43,9 @@ export async function action ( { request } ) {
                     username: username,
                     about: '',
                     profilePicture: '',
-                    savedPosts: []
+                    savedPosts: [],
+                    followers: [],
+                    following: [],
                 });
             }
 

@@ -9,13 +9,24 @@ export default function Sidebar () {
       if(!user){
         return;
       }
+
+      const profilePicture =
+      user.profilePicture === "" ? (
+        <FontAwesomeIcon icon={faCircleUser} className="text-4xl text-gray-500" />
+      ) : (
+        <img
+          src={user.profilePicture}
+          alt="Profile picture"
+          className="w-12 h-12 rounded-full object-cover shadow-md"
+        />
+      );
     
     return(
         <ul className="w-[20%] h-[90vh] bg-gray-800 text-[#f5f5f5] flex flex-col justify-between p-5 pl-5 sticky top-20 rounded-r-3xl shadow-lg">
         <div className="flex flex-col gap-4">
          <Link to={`/user-profile/:${user.uid}`}>
-         <li className="text-2xl font-bold text-[#00bcd4] cursor-pointer mb-2">
-            <FontAwesomeIcon icon={faCircleUser} /> {user && user.username}
+         <li className="w-full flex items-center gap-3 text-xl font-bold text-[#00bcd4] cursor-pointer mb-2">
+            {profilePicture}{user && user.username}
           </li>
          </Link>
         <Link to='/home'>

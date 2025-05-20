@@ -14,6 +14,7 @@ export default function NewPost() {
   const user = useSelector((state) => state.user.user);
   const [selectedImage, setSelectedImage] = useState(null);
   const dispatch = useDispatch();
+  console.log(user)
 
   const fileChangeHandler = (e) => {
     const file = e.target.files[0];
@@ -44,7 +45,7 @@ export default function NewPost() {
     const postData = {
       userId: user.uid,
       username: user.username,
-      userProfileImage: user.profilePicture || '',
+      profilePicture: user.profilePicture || '',
       postContent: textRef.current.value,
       imageUrl: imageUrl,
       time: Date.now(),
@@ -68,6 +69,16 @@ export default function NewPost() {
   if(!user || !user.username){
     return <p></p>
   }
+  const profilePicture =
+  user.profilePicture === "" ? (
+    <FontAwesomeIcon icon={faCircleUser} className="text-4xl text-gray-500" />
+  ) : (
+    <img
+      src={user.profilePicture}
+      alt="Profile picture"
+      className="w-14 h-14 rounded-full object-cover shadow-md"
+    />
+  );
 
   return (
     <div className="min-h-screen w-[60%] bg-gray-900 text-white flex items-start justify-center pt-20 px-4">
@@ -78,7 +89,7 @@ export default function NewPost() {
     </h2>
 
     <div className="flex items-center gap-4 mb-6">
-      <FontAwesomeIcon icon={faCircleUser} className="text-6xl text-cyan-400" />
+    {profilePicture}
       <input
         ref={textRef}
         type="text"
