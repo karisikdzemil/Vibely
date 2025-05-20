@@ -45,10 +45,8 @@ export default function Post({ post }) {
   async function deletePostHandler(id) {
     try {
       setIsDeliting(true);
-      // Brisanje samog posta
       await deleteDoc(doc(db, "PostsMeta", id));
 
-      // Dohvati i obriši sve komentare tog posta
       const commentsQuery = query(
         collection(db, "comments"),
         where("postId", "==", id)
@@ -68,6 +66,8 @@ export default function Post({ post }) {
       console.error("Greška prilikom brisanja posta i komentara:", error);
     }
   }
+
+  
 
   return (
     <li

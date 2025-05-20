@@ -32,7 +32,6 @@ export default function SavedPosts() {
           return;
         }
 
-        // Dohvata sve postove koji imaju id u savedPostIds
         const postsRef = collection(db, "PostsMeta");
         const postsQuery = query(postsRef, where("__name__", "in", savedPostIds));
         const snapshot = await getDocs(postsQuery);
@@ -62,7 +61,8 @@ export default function SavedPosts() {
   }
 
   return (
-    <div className="w-[100%] min-h-[90vh] bg-gray-900 flex flex-col items-center p-5">
+    <div className="w-[60%] min-h-[90vh] bg-gray-900 flex flex-col items-center p-5">
+        <h1 className="text-[#00bcd4] text-4xl font-bold">Saved Posts</h1>
         <RenderPosts posts={savedPosts}/>
     </div>
   );
