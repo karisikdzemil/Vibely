@@ -10,9 +10,9 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../components/firebase";
 import { useDispatch } from "react-redux";
 import { userActions } from "../store/user-slice"; 
+import ProfileActionInfo from "../components/profile/ProfileActionInfo";
 
 export default function Profile() {
-  // const currentUser = useSelector((state) => state.user.user);
   const [userData, setUserData] = useState(null);
   const [posts, setPosts] = useState();
   const [selectedImage, setSelectedImage] = useState();
@@ -20,7 +20,6 @@ export default function Profile() {
   const userRef = useRef();
   const aboutRef = useRef();
   const [isEditing, setIsEditing] = useState(false);
-  // const allPosts = useSelector(state => state.posts);
   const { userId } = useParams();
   const dispatch = useDispatch();
 
@@ -193,6 +192,7 @@ export default function Profile() {
           />
         )}
         {!isEditing ? <p className="text-gray-400">{userData.email}</p> : ""}
+        <ProfileActionInfo />
         <div className="mt-6 text-center w-full">
           <h3 className="text-xl font-medium text-[#00bcd4] mb-2">About</h3>
           {!isEditing ? (

@@ -7,7 +7,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../components/firebase";
 
-// Fetch all users that the current user follows
 export const fetchFollowing = createAsyncThunk(
   "followers/fetchFollowing",
   async (userId) => {
