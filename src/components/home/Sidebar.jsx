@@ -14,8 +14,8 @@ export default function Sidebar () {
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
   // const { userId } = useParams();
-  const userId = user.uid;
-
+  const userId = user?.uid;
+  
   useEffect(() => {
     async function getData() {
       if (!userId) return;
