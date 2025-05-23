@@ -8,13 +8,10 @@ import { useDispatch } from "react-redux";
 import { userActions } from "./store/user-slice";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import Profile from "./pages/Profile";
-import { db } from "./components/firebase";
-import { getDocs, collection } from "firebase/firestore";
-import { setPosts } from "./store/posts-slice";
 import NewPost from "./pages/NewPost";
 import Help from "./pages/Help";
 import SavedPosts from "./pages/SavedPosts";
-// import { fetchFollowing } from "./store/followers-slice";
+import Settings from "./pages/Settings";
 
 function App() {
   const dispatch = useDispatch();
@@ -24,22 +21,21 @@ function App() {
 
     if (storedUser) {
       dispatch(userActions.setUser(JSON.parse(storedUser)));
-      // dispatch(fetchFollowing(JSON.parse(storedUser).uid));
     }
   }, [dispatch]);
 
-  useEffect(() => {
-    async function fetchPosts() {
-      const postsRef = collection(db, "PostsMeta");
-      const snapshot = await getDocs(postsRef);
-      const postsArray = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      dispatch(setPosts(postsArray));
-    }
-    fetchPosts();
-  }, [dispatch]);
+  // useEffect(() => {
+  //   async function fetchPosts() {
+  //     const postsRef = collection(db, "PostsMeta");
+  //     const snapshot = await getDocs(postsRef);
+  //     const postsArray = snapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+  //     dispatch(setPosts(postsArray));
+  //   }
+  //   fetchPosts();
+  // }, [dispatch]);
 
   const router = createBrowserRouter([
     {
@@ -64,6 +60,7 @@ function App() {
         { path: "/new-post", element: <NewPost /> },
         { path: "/help", element: <Help /> },
         { path: "/saved-posts", element: <SavedPosts /> },
+        { path: "/settings", element: <Settings /> },
       ],
     },
   ]);

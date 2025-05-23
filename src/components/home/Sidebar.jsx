@@ -3,7 +3,6 @@ import {
   faHouse,
   faImage,
   faCircleUser,
-  faMagnifyingGlass,
   faBookmark,
   faGear,
   faCircleQuestion,
@@ -13,6 +12,11 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
+import { auth } from "../firebase";
+import { signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../store/user-slice";
 import { db } from "../firebase";
 
 export default function Sidebar() {
@@ -20,15 +24,14 @@ export default function Sidebar() {
   const [posts, setPosts] = useState([]);
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
-
-  // const userId = user?.uid;
+  const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (!user) return;
   
     const userId = user.uid;
   
-    // Fetch posts (jednokratno)
     const getPosts = async () => {
       const postsRef = collection(db, "PostsMeta");
       const postsQuery = query(postsRef, where("userId", "==", userId));
@@ -38,7 +41,6 @@ export default function Sidebar() {
   
     getPosts();
   
-    // Listener za followers
     const followersRef = collection(db, "Followers");
   
     const unsubscribeFollowers = onSnapshot(
@@ -59,12 +61,19 @@ export default function Sidebar() {
       unsubscribeFollowers();
       unsubscribeFollowing();
     };
-  }, [user]); // bitno! dodaj user kao dependency
-  
+  }, [user]); 
 
   if (!user) {
     return null;
   }
+
+   const handleLogout = async () => {
+      await signOut(auth);
+      localStorage.removeItem("user");
+      dispatch(userActions.setUser(null));
+      navigate("/register");
+    };
+  
 
   const profilePicture =
     user.profilePicture === "" ? (
@@ -99,14 +108,15 @@ export default function Sidebar() {
           </li>
         </Link>
 
-        <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
-          <FontAwesomeIcon icon={faMagnifyingGlass} /> Explore
-        </li>
-
         <Link to="/saved-posts">
           <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
             <FontAwesomeIcon icon={faBookmark} /> Saved
           </li>
+        </Link>
+        <Link to={`/user-profile/${user.uid}`}>
+         <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
+          <FontAwesomeIcon icon={faCircleUser} />  Profile
+        </li>
         </Link>
       </div>
 
@@ -118,17 +128,19 @@ export default function Sidebar() {
       </div>
 
       <div className="flex flex-col gap-3 text-sm border-t border-gray-600 pt-3">
+        <Link to='/settings'>
         <li className="cursor-pointer hover:text-[#00bcd4]">
           <FontAwesomeIcon icon={faGear} /> Settings
         </li>
+        </Link>
         <Link to="/help">
           <li className="cursor-pointer hover:text-[#00bcd4]">
             <FontAwesomeIcon icon={faCircleQuestion} /> Help
           </li>
         </Link>
-        <li className="cursor-pointer hover:text-red-400">
+        <button onClick={handleLogout} className="cursor-pointer hover:text-red-400">
           <FontAwesomeIcon icon={faRightFromBracket} /> Logout
-        </li>
+        </button>
       </div>
     </ul>
   );

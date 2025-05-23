@@ -5,7 +5,6 @@ export default function Story () {
     const navigate = useNavigate();
     const posts = useSelector(state => state.posts);
     let showPostArray = posts.filter(el => el.imageUrl !== '');
-    // showPostArray.length = 5;    
 
     function showUserPostsHandler (post) {
         navigate(`/user-profile/:${post.userId}`)

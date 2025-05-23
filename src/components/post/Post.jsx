@@ -51,12 +51,10 @@ export default function Post({ post }) {
     navigate(`/user-profile/:${post.userId}`);
   };
 
-  // Prati promene u listi following trenutnog korisnika
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, "Users", currentUser.uid), (docSnap) => {
       const data = docSnap.data();
       const userFollowing = data?.following || [];
-      // setFollowing(userFollowing);
       setIsFollowing(userFollowing.includes(post.userId));
     });
 
@@ -69,7 +67,6 @@ export default function Post({ post }) {
 
     try {
       if (isFollowing) {
-        // UNFOLLOW
         await updateDoc(userRef, {
           following: arrayRemove(post.userId),
         });
@@ -78,7 +75,6 @@ export default function Post({ post }) {
           followers: arrayRemove(currentUser.uid),
         });
 
-        // Izbriši iz "Followers" kolekcije ako koristiš je
         const q = query(
           collection(db, "Followers"),
           where("followerId", "==", currentUser.uid),
@@ -89,7 +85,6 @@ export default function Post({ post }) {
           await deleteDoc(docSnap.ref);
         });
       } else {
-        // FOLLOW
         await updateDoc(userRef, {
           following: arrayUnion(post.userId),
         });
@@ -98,7 +93,6 @@ export default function Post({ post }) {
           followers: arrayUnion(currentUser.uid),
         });
 
-        // Dodaj u "Followers" kolekciju ako koristiš je
         await addDoc(collection(db, "Followers"), {
           followerId: currentUser.uid,
           followingId: post.userId,

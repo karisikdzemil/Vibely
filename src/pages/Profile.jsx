@@ -1,5 +1,5 @@
 import { getDoc, doc } from "firebase/firestore";
-import { db } from "../components/firebase";
+import { db, storage } from "../components/firebase";
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
@@ -7,15 +7,17 @@ import RenderPosts from "../components/post/RenderPosts";
 import { useParams } from "react-router-dom";
 import { collection, where, query, getDocs, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../components/firebase";
 import { useDispatch } from "react-redux";
-import { userActions } from "../store/user-slice"; 
+import { userActions } from "../store/user-slice";
 import ProfileActionInfo from "../components/profile/ProfileActionInfo";
 
 export default function Profile() {
   const [userData, setUserData] = useState(null);
   const [posts, setPosts] = useState();
-  const [selectedImage, setSelectedImage] = useState();
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [usernameError, setUsernameError] = useState("");
+  const [aboutError, setAboutError] = useState("");
   const inputImageRef = useRef();
   const userRef = useRef();
   const aboutRef = useRef();
@@ -23,21 +25,18 @@ export default function Profile() {
   const { userId } = useParams();
   const dispatch = useDispatch();
 
-  let currentUser = localStorage.getItem("user");
-  currentUser = JSON.parse(currentUser);
+  let currentUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     async function getUser() {
       if (!userId) return;
-
       const userRef = doc(db, "Users", userId.replace(":", ""));
-
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
         setUserData(userSnap.data());
       }
-      const cleanedUserId = userId.replace(/^:/, "");
 
+      const cleanedUserId = userId.replace(/^:/, "");
       const postsRef = collection(db, "PostsMeta");
       const q = query(postsRef, where("userId", "==", cleanedUserId));
       const snapshot = await getDocs(q);
@@ -58,100 +57,121 @@ export default function Profile() {
       </div>
     );
   }
-  let isCurrentUser = false;
 
-  if (userId.replace(/^:/, "") === currentUser.uid) {
-    isCurrentUser = true;
-  }
+  const isCurrentUser = userId.replace(/^:/, "") === currentUser.uid;
 
-  const profilePicture =
+  const profilePicture = !isEditing ? (
     userData.profilePicture === "" ? (
       <FontAwesomeIcon icon={faCircleUser} className="text-8xl text-cyan-400" />
     ) : (
       <img
         src={userData.profilePicture}
-        alt="Profile picture"
+        alt="Profile"
         className="w-32 h-32 rounded-full object-cover border-4 border-[#00bcd4] shadow-md"
       />
-    );
-
-    async function editUserHandler() {
-      if (!isEditing) {
-        setIsEditing(true);
-        return;
-      }
-    
-      try {
-        let imageUrl = userData.profilePicture;
-    
-        if (selectedImage && selectedImage instanceof File) {
-          const imageRef = ref(
-            storage,
-            `userImages/${currentUser.uid}_${Date.now()}`
-          );
-          await uploadBytes(imageRef, selectedImage);
-          imageUrl = await getDownloadURL(imageRef);
-        }
-    
-        const changedUser = {
-          about: aboutRef.current.value,
-          username: userRef.current.value,
-          email: currentUser.email,
-          profilePicture: imageUrl,
-        };
-    
-        const userDocRef = doc(db, "Users", currentUser.uid);
-        await updateDoc(userDocRef, changedUser);
-    
-        // Update posts with new username/profilePicture
-        const postsQuery = query(
-          collection(db, "PostsMeta"),
-          where("userId", "==", currentUser.uid)
-        );
-    
-        const snapshot = await getDocs(postsQuery);
-    
-        const updatePostPromises = snapshot.docs.map((docSnap) => {
-          const postRef = doc(db, "PostsMeta", docSnap.id);
-          return updateDoc(postRef, {
-            username: changedUser.username,
-            profilePicture: changedUser.profilePicture,
-          });
-        });
-    
-        await Promise.all(updatePostPromises);
-    
-        const updatedPosts = snapshot.docs.map((docSnap) => ({
-          id: docSnap.id,
-          ...docSnap.data(),
-          username: changedUser.username,
-          profilePicture: changedUser.profilePicture,
-        }));
-    
-        const updatedUser = { ...currentUser, ...changedUser };
-        console.log(updatedUser);
-        console.log(updatedPosts)
-        dispatch(userActions.setUser(updatedUser));
-        // dispatch(setPosts(updatedPosts));
-
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-    
-        setUserData(updatedUser);
-        setIsEditing(false);
-      } catch (error) {
-        console.error("Greška prilikom ažuriranja korisnika i postova:", error);
-      }
-    }
-    
+    )
+  ) : previewUrl ? (
+    <img
+      src={previewUrl}
+      alt="Preview"
+      className="w-32 h-32 rounded-full object-cover border-4 border-[#00bcd4] shadow-md"
+    />
+  ) : (
+    <div
+      onClick={chooseImageHandler}
+      className="cursor-pointer w-32 h-32 bg-gray-600 flex flex-col items-center justify-center gap-3 rounded-full"
+    >
+      <h1 className="text-4xl text-white">+</h1>
+      <p className="text-sm">Add Image</p>
+    </div>
+  );
 
   function chooseImageHandler() {
     inputImageRef.current.click();
   }
+
   function imageInputHandler(event) {
     const file = event.target.files[0];
     if (file) {
       setSelectedImage(file);
-      console.log("Izabrana slika:", file.name);
+      const reader = new FileReader();
+      reader.onloadend = () => setPreviewUrl(reader.result);
+      reader.readAsDataURL(file);
+    }
+  }
+
+  async function editUserHandler() {
+    if (!isEditing) {
+      setIsEditing(true);
+      return;
+    }
+
+    const enteredUsername = userRef.current?.value.trim();
+    const enteredAbout = aboutRef.current?.value.trim();
+
+    // Validacija
+    let isValid = true;
+
+    if (enteredUsername && enteredUsername.length < 3) {
+      setUsernameError("Username must be at least 3 characters.");
+      isValid = false;
+    } else {
+      setUsernameError("");
+    }
+
+    if (enteredAbout && enteredAbout.length < 3) {
+      setAboutError("About must be at least 3 characters.");
+      isValid = false;
+    } else {
+      setAboutError("");
+    }
+
+    if (!isValid) return;
+
+    try {
+      let imageUrl = userData.profilePicture;
+
+      if (selectedImage && selectedImage instanceof File) {
+        const imageRef = ref(storage, `userImages/${currentUser.uid}_${Date.now()}`);
+        await uploadBytes(imageRef, selectedImage);
+        imageUrl = await getDownloadURL(imageRef);
+      }
+
+      const changedUser = {
+        username: enteredUsername || userData.username,
+        about: enteredAbout || userData.about,
+        email: currentUser.email,
+        profilePicture: imageUrl,
+      };
+
+      const userDocRef = doc(db, "Users", currentUser.uid);
+      await updateDoc(userDocRef, changedUser);
+
+      const postsQuery = query(
+        collection(db, "PostsMeta"),
+        where("userId", "==", currentUser.uid)
+      );
+      const snapshot = await getDocs(postsQuery);
+
+      const updatePostPromises = snapshot.docs.map((docSnap) => {
+        const postRef = doc(db, "PostsMeta", docSnap.id);
+        return updateDoc(postRef, {
+          username: changedUser.username,
+          profilePicture: changedUser.profilePicture,
+        });
+      });
+
+      await Promise.all(updatePostPromises);
+
+      const updatedUser = { ...currentUser, ...changedUser };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      dispatch(userActions.setUser(updatedUser));
+      setUserData(updatedUser);
+      setIsEditing(false);
+      setSelectedImage(null);
+      setPreviewUrl(null);
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
   }
 
@@ -163,49 +183,52 @@ export default function Profile() {
             onClick={editUserHandler}
             className="w-25 h-10 rounded-md hover:bg-[#31a1b0] cursor-pointer absolute right-10 top-10 bg-[#00bcd4]"
           >
-            Edit
+            {isEditing ? "Save" : "Edit"}
           </button>
         )}
-        {!isEditing ? (
-          profilePicture
-        ) : (
-          <div
-            onClick={chooseImageHandler}
-            className="cursor-pointer w-30 h-30 bg-gray-600 flex flex-col items-center justify-center gap-3"
-          >
-            <h1 className="text-4xl text-white">+</h1> <p>Add Image</p>
-            <input
-              onChange={imageInputHandler}
-              ref={inputImageRef}
-              type="file"
-              className="hidden"
-            />
-          </div>
-        )}
+
+        {profilePicture}
+
         {!isEditing ? (
           <h2 className="text-2xl font-semibold mt-4">{userData.username}</h2>
         ) : (
-          <input
-            ref={userRef}
-            className="w-3/5 h-7 bg-gray-600 pl-5 my-5"
-            placeholder={userData.username}
-          />
+          <div className="w-3/5 flex flex-col my-4">
+            <input
+              ref={userRef}
+              className="h-7 bg-gray-600 pl-5 rounded"
+              placeholder={userData.username}
+            />
+            {usernameError && <p className="text-red-400 text-sm mt-1">{usernameError}</p>}
+          </div>
         )}
+
         {!isEditing ? <p className="text-gray-400">{userData.email}</p> : ""}
         <ProfileActionInfo />
+
         <div className="mt-6 text-center w-full">
           <h3 className="text-xl font-medium text-[#00bcd4] mb-2">About</h3>
           {!isEditing ? (
             <p className="text-gray-300">{userData.about}</p>
           ) : (
-            <textarea
-              ref={aboutRef}
-              className="w-3/5 h-20 bg-gray-600 p-2 "
-              placeholder={userData.about}
-            />
+            <div className="w-3/5 flex flex-col m-auto">
+              <textarea
+                ref={aboutRef}
+                className="h-20 bg-gray-600 p-2 rounded"
+                placeholder={userData.about}
+              />
+              {aboutError && <p className="text-red-400 text-sm mt-1">{aboutError}</p>}
+            </div>
           )}
         </div>
+
+        <input
+          onChange={imageInputHandler}
+          ref={inputImageRef}
+          type="file"
+          className="hidden"
+        />
       </div>
+
       <div>
         <RenderPosts posts={posts} />
       </div>
