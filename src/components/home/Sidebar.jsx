@@ -2,9 +2,43 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faImage, faCircleUser, faMagnifyingGlass, faBookmark, faGear, faCircleQuestion, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+// import ProfileActionInfo from "../profile/ProfileActionInfo";
+import { useEffect, useState } from "react"
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
+// import { useParams } from "react-router-dom";
 
 export default function Sidebar () {
   const user = useSelector(state => state.user.user);
+  const [posts, setPosts] = useState([]);
+  const [followers, setFollowers] = useState(0);
+  const [following, setFollowing] = useState(0);
+  // const { userId } = useParams();
+  const userId = user.uid;
+
+  useEffect(() => {
+    async function getData() {
+      if (!userId) return;
+
+      const cleanedUserId = userId.replace(/^:/, "");
+
+      const postsRef = collection(db, "PostsMeta");
+      const postsQuery = query(postsRef, where("userId", "==", cleanedUserId));
+      const postsSnapshot = await getDocs(postsQuery);
+      setPosts(postsSnapshot.docs);
+
+      const followersRef = collection(db, "Followers");
+      const followersQuery = query(followersRef, where("followingId", "==", cleanedUserId));
+      const followersSnapshot = await getDocs(followersQuery);
+      setFollowers(followersSnapshot.size);
+
+      const followingQuery = query(followersRef, where("followerId", "==", cleanedUserId));
+      const followingSnapshot = await getDocs(followingQuery);
+      setFollowing(followingSnapshot.size);
+    }
+
+    getData();
+  }, [userId]);
 
       if(!user){
         return;
@@ -52,11 +86,11 @@ export default function Sidebar () {
         </div>
       
         <div className="flex flex-col gap-3 text-sm">
-          <p className="text-gray-400 font-semibold">Your stats:</p>
-          <p>👥 Followers: 124</p>
-          <p>📝 Posts: 56</p>
-          <p>❤️ Likes: 980</p>
-        </div>
+              <p className="text-gray-400 font-semibold">Your stats:</p>
+              <p>👥 Followers: {followers}</p>
+              <p>👥 Following: {following}</p>
+              <p>📝 Posts: {posts.length}</p>
+            </div>
       
         <div className="flex flex-col gap-3 text-sm border-t border-gray-600 pt-3">
           <li className="cursor-pointer hover:text-[#00bcd4]">

@@ -2,10 +2,22 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "./pages/Header";
 import Sidebar from "./components/home/sidebar";
 import MoreInformation from "./components/home/MoreInformation";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { fetchFollowing } from "./store/followers-slice";
 export default function Layout () {
-    const location = useLocation();
 
-    // Stranice na kojima ne želiš da prikažeš Sidebar i ostale delove
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+      const storedUser = localStorage.getItem("user");
+  
+      if (storedUser) {
+        dispatch(fetchFollowing(JSON.parse(storedUser).uid));
+      }
+    }, [dispatch]);
+  
+    const location = useLocation();
     const hideLayoutPaths = ["/", "/register"];
   
     const shouldHideLayout = hideLayoutPaths.includes(location.pathname);

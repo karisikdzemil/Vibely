@@ -42,7 +42,7 @@ export default function Follow({ post }) {
     }
   };
 
-  if (user.uid === post.userId) return null; // ne prikazuj dugme ako gledaš svoj post
+  if (user.uid === post.userId) return null; 
 
   return (
     <button

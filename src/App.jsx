@@ -14,7 +14,7 @@ import { setPosts } from "./store/posts-slice";
 import NewPost from "./pages/NewPost";
 import Help from "./pages/Help";
 import SavedPosts from "./pages/SavedPosts";
-import { fetchFollowing } from "./store/followers-slice";
+// import { fetchFollowing } from "./store/followers-slice";
 
 function App() {
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ function App() {
 
     if (storedUser) {
       dispatch(userActions.setUser(JSON.parse(storedUser)));
-      dispatch(fetchFollowing(storedUser.uid));
+      // dispatch(fetchFollowing(JSON.parse(storedUser).uid));
     }
   }, [dispatch]);
 
