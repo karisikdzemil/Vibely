@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { timeAgo } from "../../timeAgo";
@@ -12,41 +12,107 @@ import {
   getDocs,
   doc,
   deleteDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+  onSnapshot,
+  addDoc,
+  serverTimestamp
 } from "firebase/firestore";
 import { db } from "../firebase";
 import SavePost from "./SavePost";
-import Follow from "./Follow";
 
 export default function Post({ post }) {
-  const [isDeliting, setIsDeliting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  // const [following, setFollowing] = useState([]);
+  const [isFollowing, setIsFollowing] = useState(false);
   const postRef = useRef();
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.user.user);
-  
-  if(!post || !post.id ){
-    return;
+
+  if (!post || !post.id || !currentUser || !currentUser.uid) {
+    return null;
   }
 
   const edit = currentUser.uid === post.userId;
 
-
-  function showUserPostsHandler() {
-    navigate(`/user-profile/:${post.userId}`);
-  }
   const profilePicture =
     post.profilePicture === "" ? (
       <FontAwesomeIcon icon={faCircleUser} className="text-4xl text-gray-500" />
     ) : (
       <img
         src={post.profilePicture}
-        alt="Profile picture"
+        alt="Profile"
         className="w-12 h-12 rounded-full object-cover shadow-md"
       />
     );
 
-  async function deletePostHandler(id) {
+  const showUserPostsHandler = () => {
+    navigate(`/user-profile/:${post.userId}`);
+  };
+
+  // Prati promene u listi following trenutnog korisnika
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, "Users", currentUser.uid), (docSnap) => {
+      const data = docSnap.data();
+      const userFollowing = data?.following || [];
+      // setFollowing(userFollowing);
+      setIsFollowing(userFollowing.includes(post.userId));
+    });
+
+    return () => unsubscribe();
+  }, [currentUser.uid, post.userId]);
+
+  const handleFollowToggle = async () => {
+    const userRef = doc(db, "Users", currentUser.uid);
+    const followedUserRef = doc(db, "Users", post.userId);
+
     try {
-      setIsDeliting(true);
+      if (isFollowing) {
+        // UNFOLLOW
+        await updateDoc(userRef, {
+          following: arrayRemove(post.userId),
+        });
+
+        await updateDoc(followedUserRef, {
+          followers: arrayRemove(currentUser.uid),
+        });
+
+        // Izbriši iz "Followers" kolekcije ako koristiš je
+        const q = query(
+          collection(db, "Followers"),
+          where("followerId", "==", currentUser.uid),
+          where("followingId", "==", post.userId)
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach(async (docSnap) => {
+          await deleteDoc(docSnap.ref);
+        });
+      } else {
+        // FOLLOW
+        await updateDoc(userRef, {
+          following: arrayUnion(post.userId),
+        });
+
+        await updateDoc(followedUserRef, {
+          followers: arrayUnion(currentUser.uid),
+        });
+
+        // Dodaj u "Followers" kolekciju ako koristiš je
+        await addDoc(collection(db, "Followers"), {
+          followerId: currentUser.uid,
+          followingId: post.userId,
+          followedAt: serverTimestamp(),
+        });
+      }
+    } catch (error) {
+      console.error("Greška prilikom ažuriranja praćenja:", error);
+    }
+  };
+
+  const deletePostHandler = async (id) => {
+    try {
+      setIsDeleting(true);
       await deleteDoc(doc(db, "PostsMeta", id));
 
       const commentsQuery = query(
@@ -60,23 +126,20 @@ export default function Post({ post }) {
       );
 
       await Promise.all(deletePromises);
-
       postRef.current.remove();
-      setIsDeliting(false);
+      setIsDeleting(false);
     } catch (error) {
       console.error("Greška prilikom brisanja posta i komentara:", error);
     }
-  }
-
-
+  };
 
   return (
     <li
       ref={postRef}
-      className="w-4/5 min-h-[140px] p-5  bg-gray-800 px-5 py-2 rounded-md"
+      className="w-4/5 min-h-[140px] p-5 bg-gray-800 px-5 py-2 rounded-md"
     >
-      <div className="w-full flex h-12 items-center m-2">
-        <div className="w-9/10 flex gap-3 h-12 items-center m-2">
+      <div className="w-full flex h-12 items-center m-2 justify-between">
+        <div className="flex gap-3 h-12 items-center m-2">
           {profilePicture}
           <h1
             onClick={showUserPostsHandler}
@@ -86,34 +149,41 @@ export default function Post({ post }) {
           </h1>
           <p className="text-gray-500">{timeAgo(post.time)}</p>
         </div>
-        {!edit && <Follow post={post}/>}
+
+        {!edit && (
+          <button
+            onClick={handleFollowToggle}
+            className="text-sm px-4 py-1 rounded-lg bg-[#00bcd4] text-white hover:bg-cyan-600 transition"
+          >
+            {isFollowing ? "Unfollow" : "Follow"}
+          </button>
+        )}
+
         {edit && (
           <button
             onClick={() => deletePostHandler(post.id)}
-            className="text-xl p-1 px-3 rounded-md cursor-pointer hover:bg-black hover:opacity-40 text-white"
+            className="text-sm px-3 py-1 rounded-lg text-white hover:bg-black hover:opacity-40"
           >
-            {isDeliting ? 'Deliting...' : 'Delete'}
+            {isDeleting ? "Deleting..." : "Delete"}
           </button>
         )}
       </div>
-      {post.imageUrl === "" ? (
-        ""
-      ) : (
+
+      {post.imageUrl && (
         <img
-          className="w-12/12 bg-amber-950 h-2/3 max-h-96 object-cover"
+          className="w-full max-h-96 object-cover my-3 rounded-md"
           src={post.imageUrl}
-          alt=""
+          alt="Post content"
         />
       )}
-      <div className="w-full min-h-10  p-3 flex items-center gap-2 ">
-        {/* <h1 className="text-xl text-white font-bold">{post.username}:</h1> */}
-        <p className="w-[100%] min-h-10 p-3  text-gray-400">
-          {post.postContent}
-        </p>
+
+      <div className="w-full p-3">
+        <p className="text-gray-300">{post.postContent}</p>
       </div>
+
       <div className="w-full min-h-15 p-5 flex items-center gap-3">
         <Comment post={post} />
-        <SavePost post={post}/>
+        <SavePost post={post} />
       </div>
     </li>
   );

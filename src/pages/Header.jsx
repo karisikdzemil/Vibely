@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusSquare, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faPlusSquare, faSearch, faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -38,6 +38,17 @@ export default function Header() {
   }, [searchTerm, users]);
 
   if (!user) return null;
+
+    const profilePicture =
+        user.profilePicture === "" ? (
+          <FontAwesomeIcon icon={faCircleUser} className="text-4xl text-gray-500" />
+        ) : (
+          <img
+            src={user.profilePicture}
+            alt="Profile picture"
+            className="w-10 h-10 rounded-full object-cover cursor-pointer border-2 border-[#00bcd4]"
+          />
+        );
 
   return (
     <header className="w-full h-[10vh] px-8 bg-gray-800 shadow-lg border-b border-gray-700 sticky top-0 flex items-center justify-between z-50">
@@ -86,11 +97,7 @@ export default function Header() {
           <FontAwesomeIcon icon={faPlusSquare} className="cursor-pointer hover:text-[#00bcd4]" />
         </Link>
         <Link to={`/user-profile/:${user.uid}`}>
-          <img
-            src={user.profilePicture}
-            alt="Profile"
-            className="w-10 h-10 rounded-full object-cover cursor-pointer border-2 border-[#00bcd4]"
-          />
+          {profilePicture}
         </Link>
       </div>
     </header>
