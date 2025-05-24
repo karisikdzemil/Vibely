@@ -130,7 +130,7 @@ export default function Post({ post }) {
   return (
     <li
       ref={postRef}
-      className="w-4/5 min-h-[140px] p-5 bg-gray-800 px-5 py-2 rounded-md"
+      className="w-4/5 min-h-[140px] p-5 bg-white dark:bg-gray-800 px-5 py-2 rounded-md"
     >
       <div className="w-full flex h-12 items-center m-2 justify-between">
         <div className="flex gap-3 h-12 items-center m-2">

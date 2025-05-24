@@ -5,6 +5,7 @@ import { signOut, deleteUser, updatePassword } from "firebase/auth";
 import { auth, db } from "../components/firebase";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { userActions } from "../store/user-slice";
+import { toggleTheme } from "../store/theme-slice";
 
 export default function Settings() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -31,7 +32,7 @@ export default function Settings() {
 
   const handleThemeChange = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
-
+    dispatch(toggleTheme())
   };
 
   const handleDeleteAccount = async () => {
@@ -97,7 +98,7 @@ export default function Settings() {
 
         <div>
           <h2 className="text-xl font-semibold mb-4">Appearance</h2>
-          <button
+          <button 
             onClick={handleThemeChange}
             className="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded"
           >

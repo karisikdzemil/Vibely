@@ -71,8 +71,8 @@ export default function MoreInformation() {
   if (!currentUser) return null;
 
   return (
-    <div className="w-[20%] h-[90vh] bg-gray-900 sticky top-20 flex flex-col gap-5 p-4 rounded-l-2xl text-white">
-      <div className="bg-gray-800 p-3 rounded-xl shadow-md">
+    <div className="w-[20%] h-[90vh] bg-gray-100 dark:bg-gray-900 sticky top-20 flex flex-col gap-5 p-4 rounded-l-2xl text-gray-900 dark:text-white">
+      <div className="dark:bg-gray-800 bg-white p-3 rounded-xl shadow-md">
         <h3 className="text-lg font-semibold mb-2 text-[#00bcd4]">
           Suggested Friends
         </h3>
@@ -105,7 +105,7 @@ export default function MoreInformation() {
         </ul>
       </div>
 
-      <div className="bg-gray-800 p-3 rounded-xl shadow-md">
+      <div className="dark:bg-gray-800 bg-white p-3 rounded-xl shadow-md">
         <h3 className="text-lg font-semibold mb-2 text-[#00bcd4]">Trending</h3>
         <ul className="text-sm space-y-1">
           <li>#React2025</li>
@@ -114,7 +114,7 @@ export default function MoreInformation() {
         </ul>
       </div>
 
-      <div className="bg-gray-800 p-3 rounded-xl shadow-md">
+      <div className="dark:bg-gray-800 bg-white p-3 rounded-xl shadow-md">
         <h3 className="text-lg font-semibold mb-2 text-[#00bcd4]">
           Notifications
         </h3>

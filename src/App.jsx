@@ -12,15 +12,23 @@ import NewPost from "./pages/NewPost";
 import Help from "./pages/Help";
 import SavedPosts from "./pages/SavedPosts";
 import Settings from "./pages/Settings";
+import { setTheme } from "./store/theme-slice";
 
 function App() {
   const dispatch = useDispatch();
+  // const theme = useSelector(state => state.theme.theme);
+
+  useEffect(() => {
+  }, [dispatch]);
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
 
     if (storedUser) {
       dispatch(userActions.setUser(JSON.parse(storedUser)));
+      dispatch(setTheme(localStorage.getItem("theme") || "dark"));
+
     }
   }, [dispatch]);
 
