@@ -46,6 +46,7 @@ export async function action ( { request } ) {
                     savedPosts: [],
                     followers: [],
                     following: [],
+                    profileVisibility: false,
                 });
             }
 

@@ -18,6 +18,7 @@ export default function Profile() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [usernameError, setUsernameError] = useState("");
   const [aboutError, setAboutError] = useState("");
+  // const [privateProfile, setPrivateProfile] = useState(false); 
   const inputImageRef = useRef();
   const userRef = useRef();
   const aboutRef = useRef();
@@ -109,7 +110,6 @@ export default function Profile() {
     const enteredUsername = userRef.current?.value.trim();
     const enteredAbout = aboutRef.current?.value.trim();
 
-    // Validacija
     let isValid = true;
 
     if (enteredUsername && enteredUsername.length < 3) {
@@ -175,6 +175,12 @@ export default function Profile() {
     }
   }
 
+  if (userData.profileVisibility && userData.username !== currentUser.username && !userData.followers.includes(currentUser.uid)) {
+    // setPrivateProfile(true);
+    return <p>Private profile</p>
+  }
+  
+
   return (
     <div className="w-6/10 dark:bg-gray-900 bg-gray-100 min-h-screen p-8 dark:text-white text-gray-900">
       <div className="w-4/5 min-h-80 m-auto dark:bg-gray-800 bg-white rounded-2xl p-6 flex flex-col items-center relative shadow-lg">
@@ -230,6 +236,7 @@ export default function Profile() {
       </div>
 
       <div>
+        {/* {!privateProfile ? <RenderPosts posts={posts} /> : <p>Private profile</p>} */}
         <RenderPosts posts={posts} />
       </div>
     </div>

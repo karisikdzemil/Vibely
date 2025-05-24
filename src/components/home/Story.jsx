@@ -1,9 +1,9 @@
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-export default function Story () {
+export default function Story ( {posts} ) {
     const navigate = useNavigate();
-    const posts = useSelector(state => state.posts);
+    // const posts = useSelector(state => state.posts);
     let showPostArray = posts.filter(el => el.imageUrl !== '');
 
     function showUserPostsHandler (post) {

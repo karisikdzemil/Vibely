@@ -74,15 +74,15 @@ export default function Settings() {
   const saveSettings = async () => {
     try {
       await updateDoc(doc(db, "Users", user.uid), {
-        privateProfile,
-        emailNotifs,
-        pushNotifs,
+        profileVisibility: privateProfile  
       });
       alert("Settings saved.");
     } catch (err) {
       alert("Failed to save settings: " + err.message);
     }
   };
+
+  console.log(privateProfile)
 
   return (
     <div className="w-[60%] min-h-screen p-10 dark:text-white text-gray-900 dark:bg-gray-900 bg-gray-100">
