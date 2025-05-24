@@ -10,6 +10,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useDispatch } from "react-redux";
 import { userActions } from "../store/user-slice";
 import ProfileActionInfo from "../components/profile/ProfileActionInfo";
+import { addDoc } from "firebase/firestore";
 
 export default function Profile() {
   const [userData, setUserData] = useState(null);
@@ -18,13 +19,16 @@ export default function Profile() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [usernameError, setUsernameError] = useState("");
   const [aboutError, setAboutError] = useState("");
-  // const [privateProfile, setPrivateProfile] = useState(false); 
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  // const [privateProfile, setPrivateProfile] = useState(false);
   const inputImageRef = useRef();
   const userRef = useRef();
   const aboutRef = useRef();
   const [isEditing, setIsEditing] = useState(false);
   const { userId } = useParams();
   const dispatch = useDispatch();
+
 
   let currentUser = JSON.parse(localStorage.getItem("user"));
 
@@ -50,6 +54,34 @@ export default function Profile() {
     }
     getUser();
   }, [userId]);
+
+  useEffect(() => {
+    async function checkPrivacyAndFollow() {
+      if (!userData || !currentUser?.uid) return;
+  
+      const isOwner = currentUser.uid === userId.replace(/^:/, "");
+  
+      if (userData.profileVisibility && !isOwner) {
+        // Provera da li korisnik već prati
+        const q = query(
+          collection(db, "Followers"),
+          where("followerId", "==", currentUser.uid),
+          where("followingId", "==", userId.replace(/^:/, ""))
+        );
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          setIsFollowing(true);
+          setIsPrivate(false);
+        } else {
+          setIsPrivate(true);
+        }
+      } else {
+        setIsPrivate(false);
+      }
+    }
+  
+    checkPrivacyAndFollow();
+  }, [userData]);
 
   if (!userData) {
     return (
@@ -174,16 +206,29 @@ export default function Profile() {
       console.error("Error updating profile:", error);
     }
   }
+  
+  
 
-  if (userData.profileVisibility && userData.username !== currentUser.username && !userData.followers.includes(currentUser.uid)) {
-    // setPrivateProfile(true);
-    return <p>Private profile</p>
+  async function handleFollow() {
+    try {
+      const newFollow = {
+        followerId: currentUser.uid,
+        followingId: userId.replace(/^:/, ""),
+        followedAt: new Date(),
+      };
+  
+      await addDoc(collection(db, "Followers"), newFollow);
+      setIsFollowing(true);
+      setIsPrivate(false); // sad može da vidi postove
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
   }
   
 
   return (
     <div className="w-6/10 dark:bg-gray-900 bg-gray-100 min-h-screen p-8 dark:text-white text-gray-900">
-      <div className="w-4/5 min-h-80 m-auto dark:bg-gray-800 bg-white rounded-2xl p-6 flex flex-col items-center relative shadow-lg">
+    {  <div className="w-4/5 min-h-80 m-auto dark:bg-gray-800 bg-white rounded-2xl p-6 flex flex-col items-center relative shadow-lg">
         {isCurrentUser && (
           <button
             onClick={editUserHandler}
@@ -233,12 +278,25 @@ export default function Profile() {
           type="file"
           className="hidden"
         />
-      </div>
+      </div>}
 
-      <div>
-        {/* {!privateProfile ? <RenderPosts posts={posts} /> : <p>Private profile</p>} */}
-        <RenderPosts posts={posts} />
-      </div>
+      <div className="mt-10">
+  {isPrivate ? (
+    <div className="text-center p-6 bg-gray-700 text-white rounded-xl">
+      <p className="text-lg font-semibold mb-4">This account is private.</p>
+      {!isFollowing && (
+        <button
+          onClick={handleFollow}
+          className="bg-[#00bcd4] hover:bg-[#31a1b0] text-white font-medium px-6 py-2 rounded-md"
+        >
+          Follow
+        </button>
+      )}
+    </div>
+  ) : (
+    <RenderPosts posts={posts} />
+  )}
+</div>
     </div>
   );
 }
