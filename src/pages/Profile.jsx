@@ -176,8 +176,8 @@ export default function Profile() {
   }
 
   return (
-    <div className="w-6/10 min-h-screen p-8 text-white">
-      <div className="w-4/5 min-h-80 m-auto bg-gray-800 rounded-2xl p-6 flex flex-col items-center relative shadow-lg">
+    <div className="w-6/10 dark:bg-gray-900 bg-gray-100 min-h-screen p-8 dark:text-white text-gray-900">
+      <div className="w-4/5 min-h-80 m-auto dark:bg-gray-800 bg-white rounded-2xl p-6 flex flex-col items-center relative shadow-lg">
         {isCurrentUser && (
           <button
             onClick={editUserHandler}
@@ -195,25 +195,25 @@ export default function Profile() {
           <div className="w-3/5 flex flex-col my-4">
             <input
               ref={userRef}
-              className="h-7 bg-gray-600 pl-5 rounded"
+              className="h-7 dark:bg-gray-600 bg-gray-300 pl-5 rounded"
               placeholder={userData.username}
             />
             {usernameError && <p className="text-red-400 text-sm mt-1">{usernameError}</p>}
           </div>
         )}
 
-        {!isEditing ? <p className="text-gray-400">{userData.email}</p> : ""}
+        {!isEditing ? <p className="dark:text-gray-400 text-gray-700">{userData.email}</p> : ""}
         <ProfileActionInfo />
 
         <div className="mt-6 text-center w-full">
           <h3 className="text-xl font-medium text-[#00bcd4] mb-2">About</h3>
           {!isEditing ? (
-            <p className="text-gray-300">{userData.about}</p>
+            <p className="dark:text-gray-300 text-gray-700">{userData.about}</p>
           ) : (
             <div className="w-3/5 flex flex-col m-auto">
               <textarea
                 ref={aboutRef}
-                className="h-20 bg-gray-600 p-2 rounded"
+                className="h-20 dark:bg-gray-600 bg-gray-300 p-2 rounded"
                 placeholder={userData.about}
               />
               {aboutError && <p className="text-red-400 text-sm mt-1">{aboutError}</p>}

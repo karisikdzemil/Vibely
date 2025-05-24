@@ -20,7 +20,7 @@ export default function Register () {
         setTypeOfRegistration(prevType => prevType === 'signup' ? 'login' : 'signup');
     }
     return (
-        <section className="w-[100%] min-h-[100vh] bg-[#121212] flex justify-center items-center flex-col">
+        <section className="w-[100%] min-h-[100vh] dark:bg-gray-900 bg-gray-100 flex justify-center items-center flex-col">
             {typeOfRegistration === 'signup' ? <Signup type={registrationHandler}/> : <Login type={registrationHandler}/>}
         </section>  
     )

@@ -87,7 +87,7 @@ export default function Sidebar() {
     );
 
   return (
-    <ul className="w-[20%] h-[90vh] bg-gray-800 text-[#f5f5f5] flex flex-col justify-between p-5 pl-5 sticky top-20 rounded-r-3xl shadow-lg">
+    <ul className="w-[20%] h-[90vh] dark:bg-gray-800 bg-white text-gray-900 dark:text-[#f5f5f5] flex flex-col justify-between p-5 pl-5 sticky top-20 rounded-r-3xl shadow-lg">
       <div className="flex flex-col gap-4">
         <Link to={`/user-profile/${user.uid}`}>
           <li className="w-full flex items-center gap-3 text-xl font-bold text-[#00bcd4] cursor-pointer mb-2">
@@ -121,7 +121,7 @@ export default function Sidebar() {
       </div>
 
       <div className="flex flex-col gap-3 text-sm">
-        <p className="text-gray-400 font-semibold">Your stats:</p>
+        <p className="dark:text-gray-400 text-gray-600 font-semibold">Your stats:</p>
         <p>👥 Followers: {followers}</p>
         <p>👥 Following: {following}</p>
         <p>📝 Posts: {posts.length}</p>

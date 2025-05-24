@@ -83,7 +83,7 @@ currentUser = JSON.parse(currentUser);
     <div className="w-[100%] min-h-[5vh]">
       <div className="w-[100%] h-10 flex items-center gap-5">
         <Like post={post} />
-        <button onClick={commentPostHandler} className="text-white cursor-pointer">
+        <button onClick={commentPostHandler} className="dark:text-white text-gray-900 cursor-pointer">
           <FontAwesomeIcon
             className="text-xl cursor-pointer"
             icon={faComment}
@@ -96,7 +96,7 @@ currentUser = JSON.parse(currentUser);
         <div className="w-[100%] min-h-[10vh] pt-5">
           <input
             ref={commentRef}
-            className="w-8/12 h-10 pl-3 rounded-md bg-gray-600 mr-3 text-white"
+            className="w-8/12 h-10 pl-3 rounded-md dark:bg-gray-600 bg-gray-300 mr-3 dark:text-white text-gray-900"
             type="text"
             placeholder="Enter something..."
           />
@@ -110,7 +110,7 @@ currentUser = JSON.parse(currentUser);
             {allComments.map((el) => {
                 const edit = currentUser.uid === el.userId;
 
-              return <li ref={deleteCommentRef} className="w-full bg-gray-700 rounded-lg shadow-md p-4 mb-3 flex justify-between items-center">
+              return <li ref={deleteCommentRef} className="w-full dark:bg-gray-700 bg-white rounded-lg shadow-md p-4 mb-3 flex justify-between items-center">
                 <div>
                 <div className="flex items-center mb-2">
                   <img
@@ -126,15 +126,15 @@ currentUser = JSON.parse(currentUser);
                     className="w-10 h-10 rounded-full object-cover mr-3"
                   />
                   <div>
-                    <h3 className="text-white font-semibold">
+                    <h3 className="dark:text-white text-gray-900 font-semibold">
                       {el.username || "Anonimni korisnik"}
                     </h3>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm dark:text-gray-400 text-gray-900">
                       {new Date(el.createdAt).toLocaleString()}
                     </p>
                   </div>
                 </div>
-                <p className="text-gray-300 text-base leading-relaxed break-words">
+                <p className="dark:text-gray-300 text-gray-900 text-base leading-relaxed break-words">
                   {el.comment}
                 </p>
                 </div>

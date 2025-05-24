@@ -81,8 +81,8 @@ export default function NewPost() {
   );
 
   return (
-    <div className="min-h-screen w-[60%] bg-gray-900 text-white flex items-start justify-center pt-20 px-4">
-  <div className="w-full max-w-2xl bg-gray-800 rounded-3xl shadow-2xl border border-cyan-600 p-8">
+    <div className="min-h-screen w-[60%] dark:bg-gray-900 bg-gray-100 dark:text-white texh-gray-900 flex items-start justify-center pt-20 px-4">
+  <div className="w-full max-w-2xl dark:bg-gray-800 bg-white rounded-3xl shadow-2xl border border-cyan-600 p-8">
     
     <h2 className="text-3xl font-semibold text-cyan-400 mb-6 text-center">
       Create a New Post
@@ -94,7 +94,7 @@ export default function NewPost() {
         ref={textRef}
         type="text"
         placeholder={`What's on your mind, ${user.username}?`}
-        className="flex-1 bg-transparent border-b-2 border-cyan-500 text-white text-xl px-2 py-2 focus:outline-none placeholder:text-gray-400"
+        className="flex-1 bg-transparent border-b-2 border-cyan-500 dark:text-white text-gray-900 text-xl px-2 py-2 focus:outline-none placeholder:text-gray-600 dark:placeholder:text-gray-400"
       />
     </div>
 
@@ -126,7 +126,7 @@ export default function NewPost() {
 
       <button
         onClick={createPostHandler}
-        className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold text-lg py-2 px-6 rounded-xl transition shadow-md hover:shadow-cyan-700/30"
+        className="bg-cyan-500 hover:bg-cyan-600 dark:text-white text-gray-900 font-semibold text-lg py-2 px-6 rounded-xl transition shadow-md hover:shadow-cyan-700/30"
       >
         Post
       </button>

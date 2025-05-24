@@ -85,15 +85,15 @@ export default function Settings() {
   };
 
   return (
-    <div className="w-[60%] min-h-screen p-10 text-white bg-gray-900">
+    <div className="w-[60%] min-h-screen p-10 dark:text-white text-gray-900 dark:bg-gray-900 bg-gray-100">
       <h1 className="text-4xl font-bold mb-8 text-center text-cyan-400">Settings</h1>
 
-      <div className="bg-gray-800 rounded-xl p-8 space-y-10 max-w-3xl mx-auto shadow-lg">
+      <div className="dark:bg-gray-800 bg-white rounded-xl p-8 space-y-10 max-w-3xl mx-auto shadow-lg">
 
         <div>
           <h2 className="text-xl font-semibold mb-4">Account Information</h2>
-          <p className="text-gray-300">Username: <span className="font-bold">{user.username}</span></p>
-          <p className="text-gray-300">Email: <span className="font-bold">{user.email}</span></p>
+          <p className="dark:text-gray-300 text-gray-700">Username: <span className="font-bold">{user.username}</span></p>
+          <p className="dark:text-gray-300 text-gray-700">Email: <span className="font-bold">{user.email}</span></p>
         </div>
 
         <div>

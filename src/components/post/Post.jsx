@@ -130,18 +130,18 @@ export default function Post({ post }) {
   return (
     <li
       ref={postRef}
-      className="w-4/5 min-h-[140px] p-5 bg-white dark:bg-gray-800 px-5 py-2 rounded-md"
+      className="w-4/5 min-h-[140px] p-5 dark:bg-gray-800 bg-white px-5 py-2 rounded-md"
     >
       <div className="w-full flex h-12 items-center m-2 justify-between">
         <div className="flex gap-3 h-12 items-center m-2">
           {profilePicture}
           <h1
             onClick={showUserPostsHandler}
-            className="text-xl text-white font-bold cursor-pointer"
+            className="text-xl dark:text-white text-gray-900 font-bold cursor-pointer"
           >
             {post.username}
           </h1>
-          <p className="text-gray-500">{timeAgo(post.time)}</p>
+          <p className="dark:text-gray-500 text-gray-700">{timeAgo(post.time)}</p>
         </div>
 
         {!edit && (
@@ -156,7 +156,7 @@ export default function Post({ post }) {
         {edit && (
           <button
             onClick={() => deletePostHandler(post.id)}
-            className="text-sm px-3 py-1 rounded-lg text-white hover:bg-black hover:opacity-40"
+            className="text-sm px-3 py-1 rounded-lg cursor-pointer dark:text-white text-gray-900 hover:bg-black hover:opacity-50"
           >
             {isDeleting ? "Deleting..." : "Delete"}
           </button>
@@ -172,7 +172,7 @@ export default function Post({ post }) {
       )}
 
       <div className="w-full p-3">
-        <p className="text-gray-300">{post.postContent}</p>
+        <p className="dark:text-gray-300 text-gray-900">{post.postContent}</p>
       </div>
 
       <div className="w-full min-h-15 p-5 flex items-center gap-3">

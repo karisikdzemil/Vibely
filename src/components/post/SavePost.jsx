@@ -62,7 +62,7 @@ export default function SavePost( {post} ) {
     }
     
     return (
-        <button onClick={() => toggleSavePost(post.id.replace(':', ''), user.uid)} className="text-xl text-white cursor-pointer">
+        <button onClick={() => toggleSavePost(post.id.replace(':', ''), user.uid)} className="text-xl dark:text-white text-gray-900 cursor-pointer">
             <FontAwesomeIcon className={isSaved ? `text-yellow-400` : ''}  icon={faBookmark} />
         </button>
     )

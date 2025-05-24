@@ -81,7 +81,7 @@ useEffect(() => {
   }, [post.id, currentUser]);
   
   return(
-     <button onClick={likePostHandler} className="text-white text-center">
+     <button onClick={likePostHandler} className="dark:text-white text-gray-900 text-center">
           <FontAwesomeIcon className={`text-xl cursor-pointer ${isLiked ? 'text-red-600' : ''}`} icon={faHeart} />{" "}
           <span className="mx-1">{post.likesCount}</span>{" "}
         </button>

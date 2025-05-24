@@ -29,8 +29,8 @@ export default function Home() {
   
 
   return (
-    <section className="w-[60%] min-h-[90vh] dark:bg-gray-900">
-        <div className="w-[100%] min-h-[90vh] dark:bg-gray-900 flex flex-col items-center p-5">
+    <section className="w-[60%] min-h-[90vh] dark:bg-gray-900 bg-gray-100">
+        <div className="w-[100%] min-h-[90vh] dark:bg-gray-900 bg-gray-100 flex flex-col items-center p-5">
       <Story />
           <RenderPosts posts={posts}/>
         </div>
