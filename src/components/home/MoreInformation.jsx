@@ -70,9 +70,9 @@ export default function MoreInformation() {
     });
   };
 
-  console.log(suggestedUsers)
 
   function showUserHandler (user) {
+    if(!user) return
       navigate(`/user-profile/:${user.id}`);
   }
 
@@ -90,21 +90,22 @@ export default function MoreInformation() {
             <li className="text-gray-400">No more users to suggest.</li>
           )}
           {suggestedUsers.map((user) => (
-            <li onClick={() => showUserHandler(user)} key={user.id} className="flex items-center justify-between cursor-pointer">
+            <li key={user.id} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {user.profilePicture ? (
                   <img
+                  onClick={() => showUserHandler(user)}
                     src={user.profilePicture}
                     alt="avatar"
-                    className="w-8 h-8 rounded-full object-cover"
+                    className="w-8 h-8 rounded-full object-cover cursor-pointer"
                   />
                 ) : (
-                  <FontAwesomeIcon icon={faCircleUser} className="text-2xl text-gray-400" />
+                  <FontAwesomeIcon icon={faCircleUser} className="text-2xl text-gray-400 cursor-pointer" onClick={() => showUserHandler(user)}/>
                 )}
-                <span>{user.username || "Unknown"}</span>
+                <span className="cursor-pointer" onClick={() => showUserHandler(user)}>{user.username || "Unknown"}</span>
               </div>
               <button
-                className="text-[#00bcd4] text-sm hover:underline"
+                className="text-[#00bcd4] text-sm hover:underline cursor-pointer"
                 onClick={() => handleFollow(user.id)}
               >
                 {following.includes(user.id) ? "Following" : "Follow"}

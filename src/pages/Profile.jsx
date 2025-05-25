@@ -23,7 +23,6 @@ export default function Profile() {
   const [aboutError, setAboutError] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
-  // const [privateProfile, setPrivateProfile] = useState(false);
   const inputImageRef = useRef();
   const userRef = useRef();
   const aboutRef = useRef();
@@ -215,19 +214,16 @@ export default function Profile() {
     try {
       const followingId = userId.replace(/^:/, "");
   
-      // 1. Ažuriraj korisnika koji prati
       const userRef = doc(db, "Users", currentUser.uid);
       await updateDoc(userRef, {
         following: arrayUnion(followingId),
       });
   
-      // 2. Ažuriraj korisnika koji je praćen
       const followedUserRef = doc(db, "Users", followingId);
       await updateDoc(followedUserRef, {
         followers: arrayUnion(currentUser.uid),
       });
   
-      // 3. Dodaj u "Followers" kolekciju
       const newFollow = {
         followerId: currentUser.uid,
         followingId: followingId,
@@ -236,11 +232,9 @@ export default function Profile() {
   
       const docRef = await addDoc(collection(db, "Followers"), newFollow);
   
-      // 4. Lokalne promene
       setIsFollowing(true);
       setIsPrivate(false);
   
-      // 5. Globalni state
       dispatch(addFollowing({ followingId: followingId, docId: docRef.id }));
   
     } catch (error) {
