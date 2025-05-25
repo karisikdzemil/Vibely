@@ -13,11 +13,13 @@ import {
 } from "firebase/firestore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 export default function MoreInformation() {
   const currentUser = useSelector((state) => state.user.user);
   const [suggestedUsers, setSuggestedUsers] = useState([]);
   const [following, setFollowing] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!currentUser) return;
@@ -68,7 +70,14 @@ export default function MoreInformation() {
     });
   };
 
+  console.log(suggestedUsers)
+
+  function showUserHandler (user) {
+      navigate(`/user-profile/:${user.id}`);
+  }
+
   if (!currentUser) return null;
+
 
   return (
     <div className="w-[20%] h-[90vh] bg-gray-100 dark:bg-gray-900 sticky top-20 flex flex-col gap-5 p-4 rounded-l-2xl text-gray-900 dark:text-white">
@@ -81,7 +90,7 @@ export default function MoreInformation() {
             <li className="text-gray-400">No more users to suggest.</li>
           )}
           {suggestedUsers.map((user) => (
-            <li key={user.id} className="flex items-center justify-between">
+            <li onClick={() => showUserHandler(user)} key={user.id} className="flex items-center justify-between cursor-pointer">
               <div className="flex items-center gap-3">
                 {user.profilePicture ? (
                   <img

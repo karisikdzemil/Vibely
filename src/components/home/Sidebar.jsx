@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../store/user-slice";
 import { db } from "../firebase";
@@ -24,7 +24,7 @@ export default function Sidebar() {
   const [posts, setPosts] = useState([]);
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function Sidebar() {
       await signOut(auth);
       localStorage.removeItem("user");
       dispatch(userActions.setUser(null));
-      navigate("/register");
+      <Navigate to='/register'/>
     };
   
 

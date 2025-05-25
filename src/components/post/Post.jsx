@@ -61,7 +61,7 @@ export default function Post({ post }) {
     return () => unsubscribe();
   }, [currentUser.uid, post.userId]);
 
-  const handleFollowToggle = async () => {
+    const handleFollowToggle = async () => {
     const userRef = doc(db, "Users", currentUser.uid);
     const followedUserRef = doc(db, "Users", post.userId);
 

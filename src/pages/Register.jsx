@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import Signup from "../components/login/Signup";
 import Login from "../components/login/Login";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
@@ -6,13 +6,21 @@ import { auth, db } from "../components/firebase";
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { redirect } from "react-router-dom";
 import { Navigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setTheme } from "../store/theme-slice";
 
 export default function Register () {
+    const dispatch = useDispatch();
     const [typeOfRegistration, setTypeOfRegistration] = useState('signup');
 
     const user = JSON.parse(localStorage.getItem("user"));
 
-    if (user) {
+  useEffect(() => {
+
+      dispatch(setTheme(localStorage.getItem("theme") || "dark"));
+  }, [dispatch]);
+
+   if (user) {
         return <Navigate to="/home" replace />;
     }
 

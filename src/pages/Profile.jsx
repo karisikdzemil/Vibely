@@ -11,6 +11,8 @@ import { useDispatch } from "react-redux";
 import { userActions } from "../store/user-slice";
 import ProfileActionInfo from "../components/profile/ProfileActionInfo";
 import { addDoc } from "firebase/firestore";
+import { addFollowing } from "../store/followers-slice";
+import { arrayUnion } from "firebase/firestore";
 
 export default function Profile() {
   const [userData, setUserData] = useState(null);
@@ -211,15 +213,36 @@ export default function Profile() {
 
   async function handleFollow() {
     try {
+      const followingId = userId.replace(/^:/, "");
+  
+      // 1. Ažuriraj korisnika koji prati
+      const userRef = doc(db, "Users", currentUser.uid);
+      await updateDoc(userRef, {
+        following: arrayUnion(followingId),
+      });
+  
+      // 2. Ažuriraj korisnika koji je praćen
+      const followedUserRef = doc(db, "Users", followingId);
+      await updateDoc(followedUserRef, {
+        followers: arrayUnion(currentUser.uid),
+      });
+  
+      // 3. Dodaj u "Followers" kolekciju
       const newFollow = {
         followerId: currentUser.uid,
-        followingId: userId.replace(/^:/, ""),
+        followingId: followingId,
         followedAt: new Date(),
       };
   
-      await addDoc(collection(db, "Followers"), newFollow);
+      const docRef = await addDoc(collection(db, "Followers"), newFollow);
+  
+      // 4. Lokalne promene
       setIsFollowing(true);
-      setIsPrivate(false); // sad može da vidi postove
+      setIsPrivate(false);
+  
+      // 5. Globalni state
+      dispatch(addFollowing({ followingId: followingId, docId: docRef.id }));
+  
     } catch (error) {
       console.error("Error following user:", error);
     }

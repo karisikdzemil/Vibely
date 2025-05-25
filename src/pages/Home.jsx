@@ -35,6 +35,10 @@ export default function Home() {
     fetchUsers();
   }, []);
 
+  if(!posts || !users){
+    return;
+  }
+
   const filteredPosts = posts.filter(post => {
     const currentFetchedUser = users.find(user => user.id === currentUser.uid);
     console.log(currentFetchedUser)
@@ -66,6 +70,8 @@ export default function Home() {
       }
       fetchPosts();
     }, [dispatch]);
+
+
   
 
   return (
