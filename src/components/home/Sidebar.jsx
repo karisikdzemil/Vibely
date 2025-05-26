@@ -24,6 +24,7 @@ export default function Sidebar() {
   const [posts, setPosts] = useState([]);
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
+  const [logout, setLogout] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
@@ -68,9 +69,11 @@ export default function Sidebar() {
   }
 
    const handleLogout = async () => {
+    setLogout(true);
       await signOut(auth);
       localStorage.removeItem("user");
       dispatch(userActions.clearUser());
+      setLogout(false);
       navigate('/register')
     };
   
@@ -139,7 +142,7 @@ export default function Sidebar() {
           </li>
         </Link>
         <button onClick={handleLogout} className="cursor-pointer hover:text-red-400">
-          <FontAwesomeIcon icon={faRightFromBracket} /> Logout
+          <FontAwesomeIcon icon={faRightFromBracket} /> {logout ? 'Loggin Out' : 'Logout'}
         </button>
       </div>
     </ul>

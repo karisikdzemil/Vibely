@@ -16,34 +16,19 @@ import { setTheme } from "./store/theme-slice";
 
 function App() {
   const dispatch = useDispatch();
-  // const theme = useSelector(state => state.theme.theme);
-
-  useEffect(() => {
-  }, [dispatch]);
-
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
 
     if (storedUser) {
       dispatch(userActions.setUser(JSON.parse(storedUser)));
-      dispatch(setTheme(localStorage.getItem("theme") || "dark"));
-
+    } else {
+      dispatch(userActions.finishLoading());
     }
-  }, [dispatch]);
 
-  // useEffect(() => {
-  //   async function fetchPosts() {
-  //     const postsRef = collection(db, "PostsMeta");
-  //     const snapshot = await getDocs(postsRef);
-  //     const postsArray = snapshot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }));
-  //     dispatch(setPosts(postsArray));
-  //   }
-  //   fetchPosts();
-  // }, [dispatch]);
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    dispatch(setTheme(savedTheme));
+  }, [dispatch]);
 
   const router = createBrowserRouter([
     {
@@ -72,6 +57,7 @@ function App() {
       ],
     },
   ]);
+
   return <RouterProvider router={router} />;
 }
 
