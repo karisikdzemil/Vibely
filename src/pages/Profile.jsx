@@ -23,6 +23,7 @@ export default function Profile() {
   const [aboutError, setAboutError] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
+
   const inputImageRef = useRef();
   const userRef = useRef();
   const aboutRef = useRef();
@@ -86,9 +87,35 @@ export default function Profile() {
 
   if (!userData) {
     return (
-      <div className="w-[60%] min-h-screen flex justify-center items-center text-white">
-        <p>Loading profile...</p>
+      <div className="w-2/5 min-h-80 m-auto dark:bg-gray-800 bg-white rounded-2xl p-6 flex flex-col items-center relative shadow-lg animate-pulse">
+      
+      {/* Edit dugme skeleton */}
+      <div className="w-24 h-10 bg-gray-300 rounded absolute right-10 top-10" />
+
+      {/* Slika profila */}
+      <div className="w-24 h-24 bg-gray-300 rounded-full mt-4" />
+
+      {/* Username */}
+      <div className="w-40 h-6 bg-gray-300 rounded mt-4" />
+
+      {/* Email */}
+      <div className="w-56 h-4 bg-gray-300 rounded mt-2" />
+
+      {/* Follow/following info */}
+      <div className="flex gap-6 mt-4">
+        <div className="w-16 h-4 bg-gray-300 rounded" />
+        <div className="w-16 h-4 bg-gray-300 rounded" />
+        <div className="w-16 h-4 bg-gray-300 rounded" />
       </div>
+
+      {/* About sekcija */}
+      <div className="mt-6 text-center w-full">
+        <div className="w-24 h-5 bg-gray-300 rounded mx-auto mb-2" />
+        <div className="w-2/3 h-4 bg-gray-300 rounded mx-auto mb-1" />
+        <div className="w-1/2 h-4 bg-gray-300 rounded mx-auto" />
+      </div>
+    </div>
+      
     );
   }
 

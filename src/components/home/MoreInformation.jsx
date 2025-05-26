@@ -78,7 +78,6 @@ export default function MoreInformation() {
 
   if (!currentUser) return null;
 
-
   return (
     <div className="w-[20%] h-[90vh] bg-gray-100 dark:bg-gray-900 sticky top-20 flex flex-col gap-5 p-4 rounded-l-2xl text-gray-900 dark:text-white">
       <div className="dark:bg-gray-800 bg-white p-3 rounded-xl shadow-md">
