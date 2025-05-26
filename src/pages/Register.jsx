@@ -8,7 +8,6 @@ import { redirect } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setTheme } from "../store/theme-slice";
-import { userActions } from "../store/user-slice";
 
 export default function Register () {
     const dispatch = useDispatch();
@@ -16,15 +15,13 @@ export default function Register () {
 
     const user = JSON.parse(localStorage.getItem("user"));
 
-  useEffect(() => {
-
-      dispatch(setTheme(localStorage.getItem("theme") || "dark"));
-  }, [dispatch]);
-
-   if (user) {
-        dispatch(userActions.setUser(user))
+    if (user) {
         return <Navigate to="/home" replace />;
     }
+
+  useEffect(() => {
+      dispatch(setTheme(localStorage.getItem("theme") || "dark"));
+  }, [dispatch]);
 
     function registrationHandler () {
         setTypeOfRegistration(prevType => prevType === 'signup' ? 'login' : 'signup');

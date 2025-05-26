@@ -5,13 +5,16 @@ import MoreInformation from "./components/home/MoreInformation";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchFollowing } from "./store/followers-slice";
+import { userActions } from "./store/user-slice";
 export default function Layout () {
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
+
+    dispatch(userActions.setUser(JSON.parse(localStorage.getItem('user')))); //Ovde sam stao ova linija kad je u useEffect nece home a kada je ovde nece register...
 
     useEffect(() => {
       const storedUser = localStorage.getItem("user");
-  
+      
       if (storedUser) {
         dispatch(fetchFollowing(JSON.parse(storedUser).uid));
       }
