@@ -5,15 +5,20 @@ import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../components/firebase";
 import { setPosts } from "../store/posts-slice";
+import Post from "../components/post/Post";
+import { useMemo } from "react";
+import Comment from "../components/post/Comment";
+import Like from "../components/post/Like";
 
 export default function Home() {
+  const [loadingUsers, setLoadingUsers] = useState(true);
   const posts = useSelector((state) => state.posts);
-  const currentUser = useSelector((state) => state.user.user);
+  // const currentUser = useSelector((state) => state.user.user);
+  const currentUser = JSON.parse(localStorage.getItem('user'));
   const loadingAuth = useSelector((state) => state.user.loadingAuth);
   const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-
+  console.log(currentUser)
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -51,6 +56,34 @@ export default function Home() {
     fetchPosts();
   }, [dispatch]);
 
+  // const filteredPosts = useMemo(() => {
+  //   if (!currentUser || users.length === 0) return [];
+  
+  //   const currentFetchedUser = users.find((user) => user.id === currentUser.uid);
+  
+  //   if (!currentFetchedUser) return [];
+  
+  //   return posts.filter((post) => {
+  //     const author = users.find((u) => u.id === post.userId);
+  //     if (!author) return false;
+  
+  //     // Ako je profil javan
+  //     if (!author.profileVisibility) return true;
+  
+  //     // Ako ga current user prati
+  //     return currentFetchedUser.following?.includes(author.id);
+  //   });
+  // }, [posts, users, currentUser]);
+
+  
+  
+
+//   console.log("CURRENT USER:", currentUser);
+// console.log("USERS:", users);
+// console.log("POSTS:", posts);
+// console.log("FILTERED POSTS:", filteredPosts);
+
+
   if (loadingAuth || loadingUsers || !posts.length) {
     return (
       <div className="flex flex-col items-center w-[60%]">
@@ -78,7 +111,6 @@ export default function Home() {
       </div>
     );
   }
-
   const filteredPosts = posts.filter((post) => {
     const currentFetchedUser = users.find((user) => user.id === currentUser.uid);
     const author = users.find((u) => u.id === post.userId);
@@ -89,12 +121,17 @@ export default function Home() {
 
     return currentFetchedUser.following?.includes(author.id);
   });
+  console.log(filteredPosts)
+  
 
   return (
     <section className="w-[60%] min-h-[90vh] dark:bg-gray-900 bg-gray-100">
       <div className="w-full min-h-[90vh] flex flex-col items-center p-5">
         <Story posts={filteredPosts} />
         <RenderPosts posts={filteredPosts} />
+        {/* {filteredPosts.map(el => (
+          <div>{el.postContent}</div>
+        ))} */}
       </div>
     </section>
   );

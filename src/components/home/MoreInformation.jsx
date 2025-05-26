@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function MoreInformation() {
   const currentUser = useSelector((state) => state.user.user);
+  // const currentUser = JSON.parse(localStorage.getItem('user'));
   const [suggestedUsers, setSuggestedUsers] = useState([]);
   const [following, setFollowing] = useState([]);
   const navigate = useNavigate();

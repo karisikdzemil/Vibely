@@ -8,7 +8,8 @@ import { useSelector } from "react-redux";
 export default function SavePost( {post} ) {
     const [isSaved, setIsSaved] = useState(false);
     // const [fetchedUser, setFetchedUser] = useState({});
-    const user = useSelector(state => state.user.user)
+    // const user = useSelector(state => state.user.user)
+    const user = JSON.parse(localStorage.getItem('user'));
 
 
     useEffect(() => {

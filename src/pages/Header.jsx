@@ -12,6 +12,7 @@ import { db } from "../components/firebase";
 
 export default function Header() {
   const user = useSelector((state) => state.user.user);
+  // const user = JSON.parse(localStorage.getItem('user'))
   const [searchTerm, setSearchTerm] = useState("");
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);

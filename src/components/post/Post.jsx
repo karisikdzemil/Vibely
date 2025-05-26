@@ -4,7 +4,7 @@ import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { timeAgo } from "../../timeAgo";
 import { useNavigate } from "react-router-dom";
 import Comment from "./Comment";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import {
   collection,
   query,
@@ -28,10 +28,11 @@ export default function Post({ post }) {
   const [isFollowing, setIsFollowing] = useState(false);
   const postRef = useRef();
   const navigate = useNavigate();
-  const currentUser = useSelector((state) => state.user.user);
+  // const currentUser = useSelector((state) => state.user.user);
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
   if (!post || !post.id || !currentUser || !currentUser.uid) {
-    return null;
+    return <h1>Kako si majko kkao si oce </h1>;
   }
 
   const edit = currentUser.uid === post.userId;
@@ -126,6 +127,8 @@ export default function Post({ post }) {
       console.error("Greška prilikom brisanja posta i komentara:", error);
     }
   };
+
+  console.log(post)
 
   return (
     <li

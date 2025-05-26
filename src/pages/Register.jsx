@@ -8,6 +8,7 @@ import { redirect } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setTheme } from "../store/theme-slice";
+import { userActions } from "../store/user-slice";
 
 export default function Register () {
     const dispatch = useDispatch();
@@ -21,6 +22,7 @@ export default function Register () {
   }, [dispatch]);
 
    if (user) {
+        dispatch(userActions.setUser(user))
         return <Navigate to="/home" replace />;
     }
 

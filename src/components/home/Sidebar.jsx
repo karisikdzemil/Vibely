@@ -8,7 +8,7 @@ import {
   faCircleQuestion,
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
@@ -20,7 +20,8 @@ import { userActions } from "../../store/user-slice";
 import { db } from "../firebase";
 
 export default function Sidebar() {
-  const user = useSelector((state) => state.user.user);
+  // const user = useSelector((state) => state.user.user);  
+  const user = JSON.parse(localStorage.getItem('user'));
   const [posts, setPosts] = useState([]);
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
