@@ -33,64 +33,85 @@ export default function Register () {
     )
 }
 
-export async function action ( { request } ) {
+export async function action({ request }) {
     const formData = await request.formData();
-    const email = formData.get('email');
-    const password = formData.get('password');
-    const username = formData.get('username');
-    const type = formData.get('typeForm');
-    if(type === 'signup'){
-        try{
-            await createUserWithEmailAndPassword(auth, email, password);
-            const user = auth.currentUser;
-            console.log(user);
-            if(user){
-                await setDoc(doc(db, "Users", user.uid), {
-                    email: user.email,
-                    username: username,
-                    about: '',
-                    profilePicture: '',
-                    savedPosts: [],
-                    followers: [],
-                    following: [],
-                    profileVisibility: false,
-                });
-            }
-
-            const userData = {
-                uid: user.uid,
-                email: user.email,
-                username: username,
-                about: '',
-                profilePicture: ''
-            };
-            localStorage.setItem("user", JSON.stringify(userData));
-
-            return redirect('/home')
-        }catch(error){
-            console.log(error)
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const username = formData.get("username");
+    const type = formData.get("typeForm");
+  
+    if (type === "signup") {
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        const user = auth.currentUser;
+  
+        if (user) {
+          await setDoc(doc(db, "Users", user.uid), {
+            email: user.email,
+            username: username,
+            about: "",
+            profilePicture: "",
+            savedPosts: [],
+            followers: [],
+            following: [],
+            profileVisibility: false,
+          });
+  
+          const userData = {
+            uid: user.uid,
+            email: user.email,
+            username: username,
+            about: "",
+            profilePicture: "",
+          };
+          localStorage.setItem("user", JSON.stringify(userData));
+          return redirect("/home");
         }
-    }
-
-    if(type === 'login'){
-        try{
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-    
-            const docSnap = await getDoc(doc(db, "Users", user.uid));
-            const data = docSnap.data();
-            const userData = {
-                uid: user.uid,
-                email: user.email,
-                username: data.username,
-                about: data.about,
-                profilePicture: data.profilePicture
-            };
-            localStorage.setItem("user", JSON.stringify(userData));
-            return redirect('/home');
-
-        }catch(error){
-            console.log(error.message)
+      } catch (error) {
+        let message = "Registration failed.";
+        if (error.code === "auth/email-already-in-use") {
+          message = "Email is already in use.";
+        } else if (error.code === "auth/weak-password") {
+          message = "Password should be at least 6 characters.";
+        } else if (error.code === "auth/invalid-email") {
+          message = "Invalid email address.";
         }
+        return { error: message };
+      }
     }
-}
+  
+    if (type === "login") {
+      try {
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const user = userCredential.user;
+  
+        const docSnap = await getDoc(doc(db, "Users", user.uid));
+        const data = docSnap.data();
+        const userData = {
+          uid: user.uid,
+          email: user.email,
+          username: data.username,
+          about: data.about,
+          profilePicture: data.profilePicture,
+        };
+        localStorage.setItem("user", JSON.stringify(userData));
+        return redirect("/home");
+      } catch (error) {
+        let message = "Login failed.";
+        if (error.code === "auth/user-not-found") {
+          message = "User does not exist.";
+        } else if (error.code === "auth/wrong-password") {
+          message = "Incorrect password.";
+        } else if (error.code === "auth/invalid-email") {
+          message = "Invalid email.";
+        } else if (error.code === "auth/too-many-requests") {
+          message = "Too many attempts. Please try again later.";
+        }
+        return { error: message };
+      }
+    }
+  }

@@ -9,7 +9,7 @@ import {
   arrayUnion,
   onSnapshot,
   addDoc,
-  serverTimestamp
+  serverTimestamp,
 } from "firebase/firestore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
@@ -25,10 +25,13 @@ export default function MoreInformation() {
   useEffect(() => {
     if (!currentUser) return;
 
-    const unsubscribe = onSnapshot(doc(db, "Users", currentUser.uid), (docSnap) => {
-      const data = docSnap.data();
-      setFollowing(data.following || []);
-    });
+    const unsubscribe = onSnapshot(
+      doc(db, "Users", currentUser.uid),
+      (docSnap) => {
+        const data = docSnap.data();
+        setFollowing(data.following || []);
+      }
+    );
 
     return () => unsubscribe();
   }, [currentUser]);
@@ -41,8 +44,7 @@ export default function MoreInformation() {
       const users = snapshot.docs
         .map((doc) => ({ id: doc.id, ...doc.data() }))
         .filter(
-          (user) =>
-            user.id !== currentUser.uid && !following.includes(user.id)
+          (user) => user.id !== currentUser.uid && !following.includes(user.id)
         );
 
       const randomSuggestions = users
@@ -57,13 +59,13 @@ export default function MoreInformation() {
 
   const handleFollow = async (targetUserId) => {
     if (!currentUser || following.includes(targetUserId)) return;
-  
+
     const userRef = doc(db, "Users", currentUser.uid);
-  
+
     await updateDoc(userRef, {
       following: arrayUnion(targetUserId),
     });
-  
+
     await addDoc(collection(db, "Followers"), {
       followerId: currentUser.uid,
       followingId: targetUserId,
@@ -71,16 +73,15 @@ export default function MoreInformation() {
     });
   };
 
-
-  function showUserHandler (user) {
-    if(!user) return
-      navigate(`/user-profile/:${user.id}`);
+  function showUserHandler(user) {
+    if (!user) return;
+    navigate(`/user-profile/:${user.id}`);
   }
 
   if (!currentUser) return null;
 
   return (
-    <div className="w-[20%] h-[90vh] bg-gray-100 dark:bg-gray-900 sticky top-20 flex flex-col gap-5 p-4 rounded-l-2xl text-gray-900 dark:text-white">
+    <div className="w-[20%] h-[90vh] bg-gray-100 dark:bg-gray-900 sticky top-20 hidden lg:flex flex-col gap-5 p-4 rounded-l-2xl text-gray-900 dark:text-white">
       <div className="dark:bg-gray-800 bg-white p-3 rounded-xl shadow-md">
         <h3 className="text-lg font-semibold mb-2 text-[#00bcd4]">
           Suggested Friends
@@ -94,15 +95,24 @@ export default function MoreInformation() {
               <div className="flex items-center gap-3">
                 {user.profilePicture ? (
                   <img
-                  onClick={() => showUserHandler(user)}
+                    onClick={() => showUserHandler(user)}
                     src={user.profilePicture}
                     alt="avatar"
                     className="w-8 h-8 rounded-full object-cover cursor-pointer"
                   />
                 ) : (
-                  <FontAwesomeIcon icon={faCircleUser} className="text-2xl text-gray-400 cursor-pointer" onClick={() => showUserHandler(user)}/>
+                  <FontAwesomeIcon
+                    icon={faCircleUser}
+                    className="text-2xl text-gray-400 cursor-pointer"
+                    onClick={() => showUserHandler(user)}
+                  />
                 )}
-                <span className="cursor-pointer" onClick={() => showUserHandler(user)}>{user.username || "Unknown"}</span>
+                <span
+                  className="cursor-pointer"
+                  onClick={() => showUserHandler(user)}
+                >
+                  {user.username || "Unknown"}
+                </span>
               </div>
               <button
                 className="text-[#00bcd4] text-sm hover:underline cursor-pointer"
