@@ -4,7 +4,7 @@ import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { timeAgo } from "../../timeAgo";
 import { useNavigate } from "react-router-dom";
 import Comment from "./Comment";
-// import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   collection,
   query,
@@ -24,12 +24,10 @@ import SavePost from "./SavePost";
 
 export default function Post({ post }) {
   const [isDeleting, setIsDeleting] = useState(false);
-  // const [following, setFollowing] = useState([]);
   const [isFollowing, setIsFollowing] = useState(false);
   const postRef = useRef();
   const navigate = useNavigate();
-  // const currentUser = useSelector((state) => state.user.user);
-  const currentUser = JSON.parse(localStorage.getItem('user'));
+  const currentUser = useSelector((state) => state.user.user);
 
   if (!post || !post.id || !currentUser || !currentUser.uid) {
     return <h1>Kako si majko kkao si oce </h1>;
@@ -128,8 +126,6 @@ export default function Post({ post }) {
     }
   };
 
-  console.log(post)
-
   return (
     <li
       ref={postRef}
@@ -180,7 +176,6 @@ export default function Post({ post }) {
 
       <div className="w-full min-h-15 p-5 flex items-center gap-3">
         <Comment post={post} />
-        <SavePost post={post} />
       </div>
     </li>
   );

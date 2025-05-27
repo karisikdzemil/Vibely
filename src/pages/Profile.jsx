@@ -69,7 +69,6 @@ export default function Profile() {
       const isOwner = currentUser.uid === userId.replace(/^:/, "");
 
       if (userData.profileVisibility && !isOwner) {
-        // Provera da li korisnik već prati
         const q = query(
           collection(db, "Followers"),
           where("followerId", "==", currentUser.uid),

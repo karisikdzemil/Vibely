@@ -3,17 +3,16 @@ import { faComment, faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { useState, useRef } from "react";
 import { db } from "../firebase";
 import { collection, addDoc, getDocs, query, where, deleteDoc, doc } from "firebase/firestore";
-// import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Like from "./Like";
+import SavePost from "./SavePost";
 
 export default function Comment({ post }) {
   const [isVisible, setIsVisible] = useState(false);
   const [allComments, setAllComments] = useState([]);
   const commentRef = useRef();
   const deleteCommentRef = useRef();
-//   const currentUser = useSelector((state) => state.user.user);
-let currentUser = localStorage.getItem("user");
-currentUser = JSON.parse(currentUser);
+  const currentUser = useSelector((state) => state.user.user);
 
   async function commentPostHandler() {
     setIsVisible((prevState) => !prevState);
@@ -75,28 +74,29 @@ currentUser = JSON.parse(currentUser);
     }catch(error){
         console.log(error)
     }
-    console.log(id)
   } 
   
 
   return (
     <div className="w-[100%] min-h-[5vh]">
-      <div className="w-[100%] h-10 flex items-center gap-5">
-        <Like post={post} />
+      <div className="w-[100%] h-10 flex items-center justify-between gap-5">
+       <div className="w-[90%] h-10 flex items-center gap-5">
+       <Like post={post} />
         <button onClick={commentPostHandler} className="dark:text-white text-gray-900 cursor-pointer">
           <FontAwesomeIcon
             className="text-xl cursor-pointer"
             icon={faComment}
           />{" "}
-        {/* <span className="mx-1">{post.commentsCount}</span> */}
         </button>
+       </div>
+        <SavePost post={post} />
       </div>
 
       {isVisible && (
         <div className="w-[100%] min-h-[10vh] pt-5">
           <input
             ref={commentRef}
-            className="w-8/12 h-10 pl-3 rounded-md dark:bg-gray-600 bg-gray-300 mr-3 dark:text-white text-gray-900"
+            className="md:w-8/12 w-6/12 h-10 pl-3 rounded-md dark:bg-gray-600 bg-gray-300 mr-3 dark:text-white text-gray-900"
             type="text"
             placeholder="Enter something..."
           />

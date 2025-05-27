@@ -9,19 +9,6 @@ export default function Story({ posts }) {
 
   const showPostArray = posts.filter(el => el.imageUrl !== '');
 
-  // if(!showPostArray){
-  //     return (
-  //       <div className="flex gap-4 px-4 py-2 overflow-x-auto">
-  //         {[...Array(5)].map((_, i) => (
-  //           <div key={i} className="flex flex-col items-center gap-2">
-  //             <div className="w-16 h-16 rounded-full bg-gray-300 animate-pulse"></div>
-  //             <div className="w-12 h-3 bg-gray-300 rounded animate-pulse"></div>
-  //           </div>
-  //         ))}
-  //       </div>
-  //     );
-  // }
-
   const handleStoryClick = (index) => {
     setCurrentIndex(index);
     setProgress(0);

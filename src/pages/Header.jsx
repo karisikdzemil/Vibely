@@ -14,7 +14,6 @@ import MobileMenu from "../components/home/MobileMenu";
 export default function Header() {
   const user = useSelector((state) => state.user.user);
   const [searchActive, setSearchActive] = useState(false);
-  // const user = JSON.parse(localStorage.getItem('user'))
   const [searchTerm, setSearchTerm] = useState("");
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);

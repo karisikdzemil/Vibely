@@ -16,7 +16,6 @@ export default function SavedPosts() {
 
   let currentUser = localStorage.getItem("user");
   currentUser = JSON.parse(currentUser);
-  console.log(currentUser.uid);
 
   useEffect(() => {
     async function fetchSavedPosts() {

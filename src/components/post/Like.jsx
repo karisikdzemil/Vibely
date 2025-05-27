@@ -13,8 +13,6 @@ export default function Like ({post}) {
     const currentUser = useSelector(state => state.user.user);
 
     async function likePostHandler() {
-        if (!currentUser) return alert("Morate biti ulogovani da biste lajkovali post!");
-
         if(isLiking) return;
 
         setIsLiking(true);

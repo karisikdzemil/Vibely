@@ -7,7 +7,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../components/firebase";
 
-// 🔄 Thunk koji dohvaća sve korisnike koje korisnik prati
 export const fetchFollowing = createAsyncThunk(
   "followers/fetchFollowing",
   async (userId) => {
@@ -17,7 +16,6 @@ export const fetchFollowing = createAsyncThunk(
     );
     const snapshot = await getDocs(q);
 
-    // Vraćamo niz objekata sa Firestore document ID i followingId
     return snapshot.docs.map((doc) => ({
       id: doc.id,
       followingId: doc.data().followingId,
@@ -28,17 +26,15 @@ export const fetchFollowing = createAsyncThunk(
 const followersSlice = createSlice({
   name: "followers",
   initialState: {
-    followingUserIds: [],     // Lista ID-jeva korisnika koje trenutni korisnik prati
-    docIdsByUser: {},         // Mapiranje userId => docId (radi lakšeg brisanja)
+    followingUserIds: [],    
+    docIdsByUser: {},   
   },
   reducers: {
-    // Dodaje jednog novog praćenog korisnika
     addFollowing(state, action) {
       const { followingId, docId } = action.payload;
       state.followingUserIds.push(followingId);
       state.docIdsByUser[followingId] = docId;
     },
-    // Uklanja jednog praćenog korisnika
     removeFollowing(state, action) {
       const followingId = action.payload;
       state.followingUserIds = state.followingUserIds.filter(
@@ -49,7 +45,6 @@ const followersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchFollowing.fulfilled, (state, action) => {
-      // Kada se uspešno dohvate podaci iz Firestore
       state.followingUserIds = action.payload.map(
         (item) => item.followingId
       );

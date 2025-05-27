@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 
 export default function SuggestedFriends () {
     const currentUser = useSelector((state) => state.user.user);
-    // const currentUser = JSON.parse(localStorage.getItem('user'));
     const [suggestedUsers, setSuggestedUsers] = useState([]);
     const [following, setFollowing] = useState([]);
     const navigate = useNavigate();
@@ -35,7 +34,6 @@ export default function SuggestedFriends () {
     
         return () => unsubscribe();
       }, [currentUser]);
-    
 
     useEffect(() => {
         if (!currentUser) return;

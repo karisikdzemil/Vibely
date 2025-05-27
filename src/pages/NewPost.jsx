@@ -14,13 +14,11 @@ export default function NewPost() {
   const user = useSelector((state) => state.user.user);
   const [selectedImage, setSelectedImage] = useState(null);
   const dispatch = useDispatch();
-  console.log(user)
 
   const fileChangeHandler = (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedImage(file); 
-      console.log("Izabrana slika:", file.name);
     }
   };
 
@@ -61,7 +59,6 @@ export default function NewPost() {
 
     dispatch(addPost(postData))
 
-    console.log("Post created with ID:", postRef.id);
     textRef.current.value = "";
     setSelectedImage(null);
   }
