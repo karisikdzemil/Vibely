@@ -31,7 +31,7 @@ export default function Login({ type }) {
   };
 
   return (
-    <Form method="post" className="w-112 h-auto p-5 flex flex-col items-center" onSubmit={validateForm}>
+    <Form method="post" className="sm:w-112 w-full h-auto p-5 flex flex-col items-center" onSubmit={validateForm}>
       <h1 className="text-4xl dark:text-[#f5f5f5] text-gray-900 font-bold p-5">Log In</h1>
       <input type="hidden" name="typeForm" value="login" />
 

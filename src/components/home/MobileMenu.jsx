@@ -18,9 +18,9 @@ import SuggestedFriends from "./SuggestedFriends";
 export default function MobileMenu() {
   const [open, setOpen] = useState(false);
   const [logout, setLogout] = useState(false);
-  const [followers, setFollowers] = useState(0);
-  const [following, setFollowing] = useState(0);
-  const [postsCount, setPostsCount] = useState(0);
+  // const [followers, setFollowers] = useState(0);
+  // const [following, setFollowing] = useState(0);
+  // const [postsCount, setPostsCount] = useState(0);
 
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
@@ -38,32 +38,32 @@ export default function MobileMenu() {
     navigate("/register");
   };
 
-  useEffect(() => {
-    if (!user) return;
+  // useEffect(() => {
+  //   if (!user) return;
 
-    const getUserInfo = async () => {
-      try {
-        const userRef = doc(db, "users", user.id);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          const userData = userSnap.data();
-          setFollowers(userData.followers?.length || 0);
-          setFollowing(userData.following?.length || 0);
-        }
+    // const getUserInfo = async () => {
+    //   try {
+    //     const userRef = doc(db, "users", user.id);
+    //     const userSnap = await getDoc(userRef);
+    //     if (userSnap.exists()) {
+    //       const userData = userSnap.data();
+    //       setFollowers(userData.followers?.length || 0);
+    //       setFollowing(userData.following?.length || 0);
+    //     }
 
-        const postsRef = collection(db, "posts");
-        const allPostsSnap = await getDocs(postsRef);
-        const userPosts = allPostsSnap.docs.filter(
-          (doc) => doc.data().userId === user.id
-        );
-        setPostsCount(userPosts.length);
-      } catch (err) {
-        console.error("Error loading user info:", err);
-      }
-    };
+    //     const postsRef = collection(db, "posts");
+    //     const allPostsSnap = await getDocs(postsRef);
+    //     const userPosts = allPostsSnap.docs.filter(
+    //       (doc) => doc.data().userId === user.id
+    //     );
+    //     setPostsCount(userPosts.length);
+    //   } catch (err) {
+    //     console.error("Error loading user info:", err);
+    //   }
+    // };
 
-    getUserInfo();
-  }, [user]);
+  //   getUserInfo();
+  // }, [user]);
 
   if (!user) return null;
 

@@ -5,7 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import RenderPosts from "../components/post/RenderPosts";
 import { useParams } from "react-router-dom";
-import { collection, where, query, getDocs, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  where,
+  query,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useDispatch } from "react-redux";
 import { userActions } from "../store/user-slice";
@@ -30,7 +36,6 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const { userId } = useParams();
   const dispatch = useDispatch();
-
 
   let currentUser = JSON.parse(localStorage.getItem("user"));
 
@@ -60,9 +65,9 @@ export default function Profile() {
   useEffect(() => {
     async function checkPrivacyAndFollow() {
       if (!userData || !currentUser?.uid) return;
-  
+
       const isOwner = currentUser.uid === userId.replace(/^:/, "");
-  
+
       if (userData.profileVisibility && !isOwner) {
         // Provera da li korisnik već prati
         const q = query(
@@ -81,41 +86,28 @@ export default function Profile() {
         setIsPrivate(false);
       }
     }
-  
+
     checkPrivacyAndFollow();
   }, [userData]);
 
   if (!userData) {
     return (
-      <div className="w-2/5 min-h-80 m-auto dark:bg-gray-800 bg-white rounded-2xl p-6 flex flex-col items-center relative shadow-lg animate-pulse">
-      
-      {/* Edit dugme skeleton */}
-      <div className="w-24 h-10 bg-gray-300 rounded absolute right-10 top-10" />
-
-      {/* Slika profila */}
-      <div className="w-24 h-24 bg-gray-300 rounded-full mt-4" />
-
-      {/* Username */}
-      <div className="w-40 h-6 bg-gray-300 rounded mt-4" />
-
-      {/* Email */}
-      <div className="w-56 h-4 bg-gray-300 rounded mt-2" />
-
-      {/* Follow/following info */}
-      <div className="flex gap-6 mt-4">
-        <div className="w-16 h-4 bg-gray-300 rounded" />
-        <div className="w-16 h-4 bg-gray-300 rounded" />
-        <div className="w-16 h-4 bg-gray-300 rounded" />
+      <div className="lg:w-2/5 md:w-3/5 w-9/10 min-h-80 m-auto dark:bg-gray-800 bg-white rounded-2xl p-6 flex flex-col items-center relative shadow-lg animate-pulse">
+        <div className="w-24 h-10 bg-gray-300 rounded absolute right-10 top-10" />
+        <div className="w-24 h-24 bg-gray-300 rounded-full mt-4" />
+        <div className="w-40 h-6 bg-gray-300 rounded mt-4" />
+        <div className="w-56 h-4 bg-gray-300 rounded mt-2" />
+        <div className="flex gap-6 mt-4">
+          <div className="w-16 h-4 bg-gray-300 rounded" />
+          <div className="w-16 h-4 bg-gray-300 rounded" />
+          <div className="w-16 h-4 bg-gray-300 rounded" />
+        </div>
+        <div className="mt-6 text-center w-full">
+          <div className="w-24 h-5 bg-gray-300 rounded mx-auto mb-2" />
+          <div className="w-2/3 h-4 bg-gray-300 rounded mx-auto mb-1" />
+          <div className="w-1/2 h-4 bg-gray-300 rounded mx-auto" />
+        </div>
       </div>
-
-      {/* About sekcija */}
-      <div className="mt-6 text-center w-full">
-        <div className="w-24 h-5 bg-gray-300 rounded mx-auto mb-2" />
-        <div className="w-2/3 h-4 bg-gray-300 rounded mx-auto mb-1" />
-        <div className="w-1/2 h-4 bg-gray-300 rounded mx-auto" />
-      </div>
-    </div>
-      
     );
   }
 
@@ -192,7 +184,10 @@ export default function Profile() {
       let imageUrl = userData.profilePicture;
 
       if (selectedImage && selectedImage instanceof File) {
-        const imageRef = ref(storage, `userImages/${currentUser.uid}_${Date.now()}`);
+        const imageRef = ref(
+          storage,
+          `userImages/${currentUser.uid}_${Date.now()}`
+        );
         await uploadBytes(imageRef, selectedImage);
         imageUrl = await getDownloadURL(imageRef);
       }
@@ -234,113 +229,124 @@ export default function Profile() {
       console.error("Error updating profile:", error);
     }
   }
-  
-  
 
   async function handleFollow() {
     try {
       const followingId = userId.replace(/^:/, "");
-  
+
       const userRef = doc(db, "Users", currentUser.uid);
       await updateDoc(userRef, {
         following: arrayUnion(followingId),
       });
-  
+
       const followedUserRef = doc(db, "Users", followingId);
       await updateDoc(followedUserRef, {
         followers: arrayUnion(currentUser.uid),
       });
-  
+
       const newFollow = {
         followerId: currentUser.uid,
         followingId: followingId,
         followedAt: new Date(),
       };
-  
+
       const docRef = await addDoc(collection(db, "Followers"), newFollow);
-  
+
       setIsFollowing(true);
       setIsPrivate(false);
-  
+
       dispatch(addFollowing({ followingId: followingId, docId: docRef.id }));
-  
     } catch (error) {
       console.error("Error following user:", error);
     }
   }
-  
 
   return (
-    <div className="w-6/10 dark:bg-gray-900 bg-gray-100 min-h-screen p-8 dark:text-white text-gray-900">
-    {  <div className="w-4/5 min-h-80 m-auto dark:bg-gray-800 bg-white rounded-2xl p-6 flex flex-col items-center relative shadow-lg">
-        {isCurrentUser && (
-          <button
-            onClick={editUserHandler}
-            className="w-25 h-10 rounded-md hover:bg-[#31a1b0] cursor-pointer absolute right-10 top-10 bg-[#00bcd4]"
-          >
-            {isEditing ? "Save" : "Edit"}
-          </button>
-        )}
+    <div className="lg:w-6/10 md:w-9/10 w-full  md:pb-0 pb-20 dark:bg-gray-900 bg-gray-100 min-h-screen p-8 dark:text-white text-gray-900">
+      {
+        <div className="sm:w-4/5 w-full min-h-80 m-auto dark:bg-gray-800 bg-white rounded-2xl p-6 flex flex-col items-center relative shadow-lg">
 
-        {profilePicture}
+            {isCurrentUser && (
+              <button
+              onClick={editUserHandler}
+              className="md:w-25 w-15 md:h-10 h-7 rounded-md hover:bg-[#31a1b0] absolute right-5 cursor-pointer bg-[#00bcd4]"
+              >
+                {isEditing ? "Save" : "Edit"}
+              </button>
+            )}
 
-        {!isEditing ? (
-          <h2 className="text-2xl font-semibold mt-4">{userData.username}</h2>
-        ) : (
-          <div className="w-3/5 flex flex-col my-4">
-            <input
-              ref={userRef}
-              className="h-7 dark:bg-gray-600 bg-gray-300 pl-5 rounded"
-              placeholder={userData.username}
-            />
-            {usernameError && <p className="text-red-400 text-sm mt-1">{usernameError}</p>}
-          </div>
-        )}
+            {profilePicture}
 
-        {!isEditing ? <p className="dark:text-gray-400 text-gray-700">{userData.email}</p> : ""}
-        <ProfileActionInfo />
-
-        <div className="mt-6 text-center w-full">
-          <h3 className="text-xl font-medium text-[#00bcd4] mb-2">About</h3>
           {!isEditing ? (
-            <p className="dark:text-gray-300 text-gray-700">{userData.about}</p>
+            <h2 className="text-2xl font-semibold mt-4">{userData.username}</h2>
           ) : (
-            <div className="w-3/5 flex flex-col m-auto">
-              <textarea
-                ref={aboutRef}
-                className="h-20 dark:bg-gray-600 bg-gray-300 p-2 rounded"
-                placeholder={userData.about}
+            <div className="w-3/5 flex flex-col my-4">
+              <input
+                ref={userRef}
+                className="h-7 dark:bg-gray-600 bg-gray-300 pl-5 rounded"
+                placeholder={userData.username}
               />
-              {aboutError && <p className="text-red-400 text-sm mt-1">{aboutError}</p>}
+              {usernameError && (
+                <p className="text-red-400 text-sm mt-1">{usernameError}</p>
+              )}
             </div>
           )}
-        </div>
 
-        <input
-          onChange={imageInputHandler}
-          ref={inputImageRef}
-          type="file"
-          className="hidden"
-        />
-      </div>}
+          {!isEditing ? (
+            <p className="dark:text-gray-400 text-gray-700">{userData.email}</p>
+          ) : (
+            ""
+          )}
+          <ProfileActionInfo />
+
+          <div className="mt-6 text-center w-full">
+            <h3 className="text-xl font-medium text-[#00bcd4] mb-2">About</h3>
+            {!isEditing ? (
+              <p className="dark:text-gray-300 text-gray-700">
+                {userData.about}
+              </p>
+            ) : (
+              <div className="w-3/5 flex flex-col m-auto">
+                <textarea
+                  ref={aboutRef}
+                  className="h-20 dark:bg-gray-600 bg-gray-300 p-2 rounded"
+                  placeholder={userData.about}
+                />
+                {aboutError && (
+                  <p className="text-red-400 text-sm mt-1">{aboutError}</p>
+                )}
+              </div>
+            )}
+          </div>
+
+          <input
+            onChange={imageInputHandler}
+            ref={inputImageRef}
+            type="file"
+            className="hidden"
+          />
+        </div>
+      }
 
       <div className="mt-10">
-  {isPrivate ? (
-    <div className="text-center p-6 bg-gray-700 text-white rounded-xl">
-      <p className="text-lg font-semibold mb-4">This account is private.</p>
-      {!isFollowing && (
-        <button
-          onClick={handleFollow}
-          className="bg-[#00bcd4] hover:bg-[#31a1b0] text-white font-medium px-6 py-2 rounded-md"
-        >
-          Follow
-        </button>
-      )}
-    </div>
-  ) : (
-    <RenderPosts posts={posts} />
-  )}
-</div>
+        {isPrivate ? (
+          <div className="text-center p-6 bg-gray-700 text-white rounded-xl">
+            <p className="text-lg font-semibold mb-4">
+              This account is private.
+            </p>
+            {!isFollowing && (
+              <button
+                onClick={handleFollow}
+                className="bg-[#00bcd4] hover:bg-[#31a1b0] text-white font-medium px-6 py-2 rounded-md"
+              >
+                Follow
+              </button>
+            )}
+          </div>
+        ) : (
+          <RenderPosts posts={posts} />
+        )}
+      </div>
     </div>
   );
 }

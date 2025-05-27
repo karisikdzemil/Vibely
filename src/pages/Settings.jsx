@@ -82,36 +82,34 @@ export default function Settings() {
     }
   };
 
-  console.log(privateProfile)
-
   return (
-    <div className="w-[60%] min-h-screen p-10 dark:text-white text-gray-900 dark:bg-gray-900 bg-gray-100">
+    <div className="md:w-[60%] w-[100%] md:pb-0 pb-20 min-h-screen p-5 dark:text-white text-gray-900 dark:bg-gray-900 bg-gray-100">
       <h1 className="text-4xl font-bold mb-8 text-center text-cyan-400">Settings</h1>
 
       <div className="dark:bg-gray-800 bg-white rounded-xl p-8 space-y-10 max-w-3xl mx-auto shadow-lg">
 
         <div>
-          <h2 className="text-xl font-semibold mb-4">Account Information</h2>
-          <p className="dark:text-gray-300 text-gray-700">Username: <span className="font-bold">{user.username}</span></p>
-          <p className="dark:text-gray-300 text-gray-700">Email: <span className="font-bold">{user.email}</span></p>
+          <h2 className="sm:text-xl text-base font-semibold mb-4">Account Information</h2>
+          <p className="dark:text-gray-300 text-gray-700 sm:text-base text-xs">Username: <span className="font-bold">{user.username}</span></p>
+          <p className="dark:text-gray-300 text-gray-700 sm:text-base text-xs">Email: <span className="font-bold">{user.email}</span></p>
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-4">Appearance</h2>
+          <h2 className="sm:text-xl text-base font-semibold mb-4">Appearance</h2>
           <button 
             onClick={handleThemeChange}
-            className="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded"
+            className="bg-cyan-600 hover:bg-cyan-700 sm:text-base text-xs px-4 py-2 rounded"
           >
             Switch to {theme === "dark" ? "Light" : "Dark"} Mode
           </button>
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-4">Password</h2>
+          <h2 className="sm:text-xl text-base font-semibold mb-4">Password</h2>
           {!showPasswordForm ? (
             <button
               onClick={() => setShowPasswordForm(true)}
-              className="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded"
+              className="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 sm:text-base text-xs rounded"
             >
               Change Password
             </button>
@@ -134,8 +132,8 @@ export default function Settings() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-4">Privacy</h2>
-          <label className="flex items-center gap-2">
+          <h2 className="sm:text-xl text-base font-semibold mb-4">Privacy</h2>
+          <label className="sm:text-base text-xs flex items-center gap-2">
             <input
               type="checkbox"
               checked={privateProfile}
@@ -146,8 +144,8 @@ export default function Settings() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-4">Notifications</h2>
-          <label className="flex items-center gap-2">
+          <h2 className="sm:text-xl text-base font-semibold mb-4">Notifications</h2>
+          <label className="sm:text-base text-xs flex items-center gap-2">
             <input
               type="checkbox"
               checked={emailNotifs}
@@ -155,7 +153,7 @@ export default function Settings() {
             />
             Email Notifications
           </label>
-          <label className="flex items-center gap-2 mt-2">
+          <label className="sm:text-base text-xs flex items-center gap-2 mt-2">
             <input
               type="checkbox"
               checked={pushNotifs}
@@ -168,24 +166,24 @@ export default function Settings() {
         <div className="flex gap-4">
           <button
             onClick={saveSettings}
-            className="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded"
+            className="sm:text-base text-xs bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded"
           >
             Save Settings
           </button>
 
           <button
             onClick={handleLogout}
-            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
+            className="sm:text-base text-xs bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
           >
             Logout
           </button>
         </div>
 
         <div className="pt-6 border-t border-gray-600">
-          <h2 className="text-xl font-semibold mb-4 text-red-400">Danger Zone</h2>
+          <h2 className="sm:text-xl text-base font-semibold mb-4 text-red-400">Danger Zone</h2>
           <button
             onClick={handleDeleteAccount}
-            className="bg-red-700 hover:bg-red-800 px-4 py-2 rounded"
+            className="sm:text-base text-xs bg-red-700 hover:bg-red-800 px-4 py-2 rounded"
           >
             Delete My Account
           </button>

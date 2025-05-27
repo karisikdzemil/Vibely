@@ -13,10 +13,13 @@ import MobileMenu from "../components/home/MobileMenu";
 
 export default function Header() {
   const user = useSelector((state) => state.user.user);
+  const [searchActive, setSearchActive] = useState(false);
   // const user = JSON.parse(localStorage.getItem('user'))
   const [searchTerm, setSearchTerm] = useState("");
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
+  let searching = '';
+  
 
   useEffect(() => {
     async function fetchUsers() {
@@ -57,6 +60,10 @@ export default function Header() {
         className="w-10 h-10 rounded-full object-cover cursor-pointer border-2 border-[#00bcd4]"
       />
     );
+
+    if(searchActive){
+      searching = 'sm:flex hidden'
+    }
   return (
     <header className="w-full h-[10vh] px-8 dark:bg-gray-800 bg-white shadow-lg border-b border-gray-700 sticky top-0 flex items-center justify-between z-50">
       <Link to="/home">
@@ -65,13 +72,15 @@ export default function Header() {
         </h1>
       </Link>
 
-      <div className="w-1/3 relative">
+      <div className="md:w-1/3 mx-10 relative">
         <input
           type="text"
           placeholder="Search Vibely..."
-          className="w-full h-10 px-4 pl-10 rounded-full dark:bg-gray-700 bg-gray-300 dark:text-white text-gray-900 dark:placeholder-gray-400 placeholder-gray-700 focus:outline-none"
+          className="w-full h-10 px-4 pl-10 rounded-full dark:bg-gray-600 bg-gray-300 dark:text-white text-gray-900 dark:placeholder-gray-400 placeholder-gray-700 focus:outline-none"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onFocus={() => setSearchActive(true)}
+          onBlur={() => setSearchActive(false)}
         />
         <FontAwesomeIcon
           icon={faSearch}
@@ -107,7 +116,7 @@ export default function Header() {
         )}
       </div>
 
-      <div className="flex items-center gap-6 dark:text-white text-gray-900 text-xl">
+      <div className={`flex min-w-38 items-center gap-6 dark:text-white text-gray-900 text-xl ${searching}`}>
         <Link to="/new-post">
           <FontAwesomeIcon
             icon={faPlusSquare}
@@ -115,8 +124,9 @@ export default function Header() {
           />
         </Link>
         <Link to={`/user-profile/:${user.uid}`}>{profilePicture}</Link>
-      </div>
       <MobileMenu />
+      </div>
     </header>
   );
 }
+  

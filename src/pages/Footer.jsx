@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouse,
-  faImage,
+  faPlusSquare,
   faBookmark,
   faCircleUser,
 } from "@fortawesome/free-solid-svg-icons";
@@ -23,7 +23,7 @@ export default function Footer() {
 
         <Link to="/new-post">
           <li className="flex flex-col items-center hover:text-[#00bcd4]">
-            <FontAwesomeIcon icon={faImage} />
+            <FontAwesomeIcon icon={faPlusSquare} />
             <span className="text-xs">Post</span>
           </li>
         </Link>

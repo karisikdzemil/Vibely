@@ -7,7 +7,7 @@ import {
 
 export default function Help() {
   return (
-    <div className="min-h-screen dark:bg-gray-900 bg-gray-100 dark:text-white text-gray-900 flex items-center justify-center px-6 py-12">
+    <div className="min-h-screen  md:pb-0 pb-20 dark:bg-gray-900 bg-gray-100 dark:text-white text-gray-900 flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-3xl dark:bg-gray-800 bg-white rounded-3xl shadow-2xl p-10 border border-cyan-600">
         <div className="mb-10 text-center">
           <h1 className="text-4xl font-bold text-cyan-400 mb-3">

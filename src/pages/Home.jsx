@@ -83,8 +83,8 @@ export default function Home() {
 
   if (loadingAuth || loadingUsers || !posts.length) {
     return (
-      <div className="flex flex-col items-center w-[60%]">
-        <div className="flex gap-4 px-4 py-2 overflow-x-auto my-10">
+      <div className="flex flex-col items-center lg:w-[60%] md:w-[90%] w-[100%]">
+        <div className="flex max-w-full gap-4 px-4 py-2 overflow-x-auto my-10">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="flex flex-col items-center gap-2">
               <div className="w-16 h-16 rounded-full bg-gray-300 animate-pulse"></div>
@@ -92,7 +92,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="flex flex-col w-[60%] gap-6 px-4 py-2">
+        <div className="flex flex-col lg:w-[60%] md:w-[90%] w-[100%] gap-6 px-4 py-2">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="bg-white dark:bg-gray-800 rounded-md shadow p-4">
               <div className="flex items-center gap-4 mb-4">
@@ -122,7 +122,7 @@ export default function Home() {
   
 
   return (
-    <section className="lg:w-[60%] md:w-[70%] w-[100%] min-h-[90vh] dark:bg-gray-900 bg-gray-100">
+    <section className="lg:w-[60%] md:w-[70%]  md:pb-0 pb-20 w-[100%] min-h-[90vh] dark:bg-gray-900 bg-gray-100">
       <div className="w-full min-h-[90vh] flex flex-col items-center p-5">
         <Story posts={filteredPosts} />
         <RenderPosts posts={filteredPosts} />

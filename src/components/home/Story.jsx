@@ -73,24 +73,31 @@ export default function Story({ posts }) {
 
   return (
     <>
-      <ul className="w-full h-[35vh] dark:bg-gray-800 bg-white flex items-center p-5 gap-5 rounded-md overflow-x-auto flex-nowrap">
-        {showPostArray.map((el, index) => (
-          <li key={el.postId} className="min-w-40 h-[30vh] relative rounded-md">
-            <img
-              onClick={() => handleStoryClick(index)}
-              className="w-full h-full object-cover rounded-md cursor-pointer"
-              src={el.imageUrl}
-              alt=""
-            />
-            <h1
-              onClick={() => showUserPostsHandler(el)}
-              className="dark:text-white text-gray-900 absolute left-2 bottom-2 cursor-pointer"
-            >
-              {el.username}
-            </h1>
-          </li>
-        ))}
-      </ul>
+     <ul className="w-full h-auto p-5 gap-5 rounded-md overflow-x-auto flex flex-nowrap items-center bg-white dark:bg-gray-800">
+  {showPostArray.map((el, index) => (
+    <li
+      key={el.postId}
+      className="flex flex-col items-center min-w-fit md:min-w-40 md:h-[30vh] relative"
+    >
+      <img
+        onClick={() => handleStoryClick(index)}
+        src={el.imageUrl}
+        alt=""
+        className="cursor-pointer object-cover
+          rounded-full w-16 h-16 sm:w-20 sm:h-20
+          md:rounded-md md:w-full md:h-full"
+      />
+      <h1
+        onClick={() => showUserPostsHandler(el)}
+        className="mt-2 text-sm text-center cursor-pointer text-gray-900 dark:text-white
+          md:absolute md:left-2 md:bottom-2 md:mt-0 md:text-base md:text-left"
+      >
+        {el.username}
+      </h1>
+    </li>
+  ))}
+</ul>
+
 
       {showModal && currentIndex !== null && (
         <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">

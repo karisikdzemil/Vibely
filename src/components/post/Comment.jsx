@@ -88,7 +88,7 @@ currentUser = JSON.parse(currentUser);
             className="text-xl cursor-pointer"
             icon={faComment}
           />{" "}
-        <span className="mx-1">{post.commentsCount}</span>
+        {/* <span className="mx-1">{post.commentsCount}</span> */}
         </button>
       </div>
 
