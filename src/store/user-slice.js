@@ -8,11 +8,19 @@ const userSlice = createSlice({
   },
   reducers: {
     setUser(state, action) {
+      const user = action.payload;
+
+      if (!user) {
+        state.user = null;
+        state.loadingAuth = false;
+        return;
+      }
+
       state.user = {
-        uid: action.payload.uid,
-        username: action.payload.username,
-        email: action.payload.email,
-        profilePicture: action.payload.profilePicture,
+        uid: user.uid,
+        username: user.username,
+        email: user.email,
+        profilePicture: user.profilePicture,
       };
       state.loadingAuth = false;
     },

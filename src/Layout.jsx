@@ -10,15 +10,20 @@ export default function Layout () {
 
   const dispatch = useDispatch();
 
-    dispatch(userActions.setUser(JSON.parse(localStorage.getItem('user')))); //Ovde sam stao ova linija kad je u useEffect nece home a kada je ovde nece register...
+  
+  dispatch(userActions.setUser(JSON.parse(localStorage.getItem('user')))); 
 
-    useEffect(() => {
-      const storedUser = localStorage.getItem("user");
-      
-      if (storedUser) {
-        dispatch(fetchFollowing(JSON.parse(storedUser).uid));
-      }
-    }, [dispatch]);
+  useEffect(() => {
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    const parsedUser = JSON.parse(storedUser);
+    dispatch(userActions.setUser(parsedUser));              
+    dispatch(fetchFollowing(parsedUser.uid));   
+  } else {
+    dispatch(userActions.setUser(null));
+  }
+}, [dispatch]);
+
   
     const location = useLocation();
     const hideLayoutPaths = ["/", "/register"];
