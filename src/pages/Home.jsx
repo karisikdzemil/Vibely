@@ -5,10 +5,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../components/firebase";
 import { setPosts } from "../store/posts-slice";
-import Post from "../components/post/Post";
-import { useMemo } from "react";
-import Comment from "../components/post/Comment";
-import Like from "../components/post/Like";
+
 
 export default function Home() {
   const [loadingUsers, setLoadingUsers] = useState(true);
@@ -125,7 +122,7 @@ export default function Home() {
   
 
   return (
-    <section className="w-[60%] min-h-[90vh] dark:bg-gray-900 bg-gray-100">
+    <section className="lg:w-[60%] md:w-[70%] w-[100%] min-h-[90vh] dark:bg-gray-900 bg-gray-100">
       <div className="w-full min-h-[90vh] flex flex-col items-center p-5">
         <Story posts={filteredPosts} />
         <RenderPosts posts={filteredPosts} />

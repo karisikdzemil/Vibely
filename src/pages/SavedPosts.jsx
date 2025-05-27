@@ -92,7 +92,7 @@ export default function SavedPosts() {
   }
 
   return (
-    <div className="w-[60%] min-h-[90vh] dark:bg-gray-900 bg-gray-100 flex flex-col items-center p-5">
+    <div className="md:w-[60%] w-[100%] min-h-[100vh] dark:bg-gray-900 bg-gray-100 flex flex-col items-center p-5">
       <h1 className="text-[#00bcd4] text-4xl font-bold">Saved Posts</h1>
       <RenderPosts posts={savedPosts} />
     </div>

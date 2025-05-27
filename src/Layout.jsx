@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchFollowing } from "./store/followers-slice";
 import { userActions } from "./store/user-slice";
+import Footer from "./pages/Footer";
 export default function Layout () {
 
   const dispatch = useDispatch();
@@ -33,10 +34,11 @@ export default function Layout () {
     return (
         <div>
             {!shouldHideLayout && <Header />}
-            <main className="w-[100%] min-h-[90vh] flex justify-between dark:bg-gray-900 bg-gray-100">
+            <main className="w-[100%] min-h-[90vh] flex gap-10 lg:gap-0 lg:justify-between dark:bg-gray-900 bg-gray-100 ">
              {!shouldHideLayout && <Sidebar />}
               <Outlet />
              {!shouldHideLayout && <MoreInformation />}
+             {!shouldHideLayout && <Footer />}
             </main>
         </div>
     )

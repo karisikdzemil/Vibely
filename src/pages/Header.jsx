@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../components/firebase";
+import MobileMenu from "../components/home/MobileMenu";
 
 export default function Header() {
   const user = useSelector((state) => state.user.user);
@@ -115,6 +116,7 @@ export default function Header() {
         </Link>
         <Link to={`/user-profile/:${user.uid}`}>{profilePicture}</Link>
       </div>
+      <MobileMenu />
     </header>
   );
 }

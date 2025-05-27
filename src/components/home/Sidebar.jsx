@@ -91,34 +91,34 @@ export default function Sidebar() {
     );
 
   return (
-    <ul className="w-[20%] h-[90vh] dark:bg-gray-800 bg-white text-gray-900 dark:text-[#f5f5f5] flex flex-col justify-between p-5 pl-5 sticky top-20 rounded-r-3xl shadow-lg">
+    <ul className="lg:w-[20%] hidden md:w-[30%]  h-[90vh] dark:bg-gray-800 bg-white text-gray-900 dark:text-[#f5f5f5] md:flex flex-col justify-between p-5 pl-5 sticky top-20 rounded-r-3xl shadow-lg">
       <div className="flex flex-col gap-4">
         <Link to={`/user-profile/${user.uid}`}>
-          <li className="w-full flex items-center gap-3 text-xl font-bold text-[#00bcd4] cursor-pointer mb-2">
+          <li className="w-full flex items-center gap-3 text-base lg:text-xl font-bold text-[#00bcd4] cursor-pointer mb-2">
             {profilePicture}
             {user.username}
           </li>
         </Link>
 
         <Link to="/home">
-          <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
+          <li className="lg:text-lg text-base cursor-pointer hover:text-[#00bcd4]">
             <FontAwesomeIcon icon={faHouse} /> Home
           </li>
         </Link>
 
         <Link to="/new-post">
-          <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
+          <li className="lg:text-lg text-base cursor-pointer hover:text-[#00bcd4]">
             <FontAwesomeIcon icon={faImage} /> New Post
           </li>
         </Link>
 
         <Link to="/saved-posts">
-          <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
+          <li className="lg:text-lg text-base cursor-pointer hover:text-[#00bcd4]">
             <FontAwesomeIcon icon={faBookmark} /> Saved
           </li>
         </Link>
         <Link to={`/user-profile/${user.uid}`}>
-         <li className="text-lg cursor-pointer hover:text-[#00bcd4]">
+         <li className="lg:text-lg text-base cursor-pointer hover:text-[#00bcd4]">
           <FontAwesomeIcon icon={faCircleUser} />  Profile
         </li>
         </Link>
